@@ -1,0 +1,35 @@
+{
+  "name": "angular-paginated-resource",
+  "version": "0.0.0",
+  "description": "",
+  "main": "module.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/begriffs/angular-paginated-resource.git"
+  },
+  "dependencies": {
+    "amdefine": "~0.0.8"
+  },
+  "devDependencies": {
+    "jshint": "~2.1.10",
+    "sinon": "~1.7.3",
+    "chai": "~1.7.2",
+    "grunt": "~0.4.1",
+    "grunt-cli": "0.1.9",
+    "bower": "~1.2.6",
+    "grunt-bump": "~0.0.11",
+    "grunt-mocha-test": "~0.6.3",
+    "grunt-contrib-jshint": "~0.6.4"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Joe Nelson",
+    "email": "",
+    "url": "https://github.com/begriffs"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
+}
