@@ -1,10 +1,11 @@
 {
   "name": "angular-paginated-resource",
   "version": "0.0.0",
-  "main": "module.js",
+  "main": "paginated-resource.js",
   "dependencies": {
     "requirejs": "~2.1.10",
-    "angular": "~1.2.8"
+    "angular": "~1.2.8",
+    "angular-mocks": "~1.2.8"
   },
   "ignore": [
     "**/.*",

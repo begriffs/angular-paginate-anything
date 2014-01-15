@@ -10,12 +10,16 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc'
       }
     },
-    mochaTest: {
-      test: {
-        options: {
-          reporter: 'spec'
-        },
-        src: ['test/**/*.js']
+    karma: {
+      unit: {
+        configFile: 'config/karma.conf.js',
+        background: true
+      }
+    },
+    watch: {
+      karma: {
+        files: ['angular-paginated-resource.js', 'test/**/*.js'],
+        tasks: ['karma:unit:run']
       }
     },
     bump: {
@@ -27,11 +31,10 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-bump');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-karma');
 
-  // By default, lint and run all tests.
-  grunt.task.registerTask('default', ['jshint', 'mochaTest']);
-  grunt.task.registerTask('test', ['mochaTest']);
+  grunt.registerTask('devmode', ['karma:unit', 'watch']);
 };
