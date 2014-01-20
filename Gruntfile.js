@@ -11,15 +11,10 @@ module.exports = function (grunt) {
       }
     },
     karma: {
-      unit: {
-        configFile: 'config/karma.conf.js',
-        background: true
-      }
-    },
-    watch: {
-      karma: {
-        files: ['angular-paginated-resource.js', 'test/**/*.js'],
-        tasks: ['karma:unit:run']
+      travis: {
+        configFile: 'karma.conf.js',
+        singleRun: true,
+        browsers: ['PhantomJS']
       }
     },
     bump: {
@@ -33,8 +28,7 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-karma');
 
-  grunt.registerTask('devmode', ['karma:unit', 'watch']);
+  grunt.registerTask('test', ['jshint', 'karma:travis']);
 };
