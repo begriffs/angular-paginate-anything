@@ -17,15 +17,16 @@ module.exports = function(config) {
     files: [
       {pattern: 'bower_components/angular/angular.js', included: false},
       {pattern: 'bower_components/angular-mocks/angular-mocks.js', included: false},
+      {pattern: 'bower_components/angular-resource/angular-resource.js', included: false},
       {pattern: 'paginated-resource.js', included: false},
-      {pattern: 'test/**/*.js', included: false}
+      {pattern: 'test/**/*Spec.js', included: false},
+
+      'test/configure-require.js'
     ],
 
 
     // list of files to exclude
-    exclude: [
-      
-    ],
+    exclude: [ ],
 
 
     // test results reporter to use

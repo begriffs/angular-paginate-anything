@@ -7,9 +7,6 @@
     "type": "git",
     "url": "git://github.com/begriffs/angular-paginated-resource.git"
   },
-  "dependencies": {
-    "amdefine": "~0.1.0"
-  },
   "devDependencies": {
     "bower"                    : "~1.2.8",
     "grunt"                    : "~0.4.2",

@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "main": "paginated-resource.js",
   "dependencies": {
-    "requirejs": "~2.1.10",
-    "angular": "~1.2.8",
-    "angular-mocks": "~1.2.8"
+    "angular": "latest",
+    "angular-mocks": "latest",
+    "angular-resource": "latest",
+    "requirejs": "latest"
   },
   "ignore": [
     "**/.*",
