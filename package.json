@@ -8,18 +8,18 @@
     "url": "git://github.com/begriffs/angular-paginated-resource.git"
   },
   "devDependencies": {
-    "bower"                    : "~1.2.8",
-    "grunt"                    : "~0.4.2",
-    "grunt-bump"               : "~0.0.13",
-    "grunt-cli"                : "~0.1.11",
-    "grunt-contrib-jshint"     : "~0.8.0",
-    "grunt-contrib-watch"      : "~0.5.3",
-    "grunt-karma"              : "~0.6.2",
-    "jshint"                   : "~2.4.1",
-    "karma"                    : "~0.10.9",
-    "karma-jasmine"            : "~0.1.5",
-    "karma-phantomjs-launcher" : "~0.1.1",
-    "karma-requirejs"          : "~0.2.1"
+    "bower"                    : "latest",
+    "grunt"                    : "latest",
+    "grunt-bump"               : "latest",
+    "grunt-cli"                : "latest",
+    "grunt-contrib-jshint"     : "latest",
+    "grunt-contrib-watch"      : "latest",
+    "grunt-karma"              : "latest",
+    "jshint"                   : "latest",
+    "karma"                    : "latest",
+    "karma-jasmine"            : "latest",
+    "karma-phantomjs-launcher" : "latest",
+    "karma-requirejs"          : "latest"
   },
   "keywords": [],
   "author": {
