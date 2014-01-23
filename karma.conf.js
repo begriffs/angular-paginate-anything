@@ -19,7 +19,7 @@ module.exports = function(config) {
       {pattern: 'bower_components/angular-mocks/angular-mocks.js', included: false},
       {pattern: 'bower_components/angular-resource/angular-resource.js', included: false},
       {pattern: 'paginated-resource.js', included: false},
-      {pattern: 'test/**/*Spec.js', included: false},
+      {pattern: 'test/**/*_spec.js', included: false},
 
       'test/configure-require.js'
     ],
