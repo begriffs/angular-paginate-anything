@@ -14,5 +14,25 @@ define(['angular', 'angular-mocks', '../paginated-resource.js'], function (ng, m
     it('exists', function () {
       return expect($resource).toBeDefined();
     });
+
+    function incompleteRangeHeaders(hdrs) {
+      return hdrs['Range-Unit'] === 'items';
+    }
+    function rangeHeaders(hdrs) {
+      return hdrs['Range-Unit'] === 'items' &&
+        hdrs.Range.match(/^\d+-\d+$/);
+    }
+
+    it('retries with range if response too large', function () {
+      $resource('/items').query();
+
+      $httpBackend.expectGET('/items', incompleteRangeHeaders).respond(413,
+        '', { 'Accept-Ranges': 'items' }
+      );
+      $httpBackend.expectGET('/items', rangeHeaders).respond(206,
+        '', { 'Accept-Ranges': 'items', 'Range': '0-24/*' }
+      );
+      $httpBackend.flush();
+    });
   });
 });
