@@ -1,7 +1,7 @@
-define(['angular', 'angular-resource'], function (ng) {
+require(['angular', 'angular-resource'], function (ng) {
   'use strict';
 
-  return ng.module('begriffs.paginated-resource', ['ngResource']).
+  ng.module('begriffs.paginated-resource', ['ngResource']).
     factory('paginated-resource', ['$resource', function (resource) {
       return function (url, range, params, actions) {
 
