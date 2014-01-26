@@ -14,7 +14,8 @@ require.config({
   paths: {
     angular: '/base/bower_components/angular/angular',
     'angular-resource': '/base/bower_components/angular-resource/angular-resource',
-    'angular-mocks': '/base/bower_components/angular-mocks/angular-mocks'
+    'angular-mocks': '/base/bower_components/angular-mocks/angular-mocks',
+    'jasmine-as-promised': '/base/bower_components/jasmine-as-promised/src/jasmine-as-promised'
   },
   shim: {
     angular: { exports : 'angular' },

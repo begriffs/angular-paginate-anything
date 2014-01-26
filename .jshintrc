@@ -17,5 +17,5 @@
   "strict": true,
   "trailing": true,
   "smarttabs": true,
-  "globals": { "require": false, "define": false, "describe": false, "it": false, "beforeEach": false, "context": false, "expect": false }
+  "globals": { "require": false, "define": false, "describe": false, "it": false, "beforeEach": false, "context": false, "expect": false, "spyOn": false }
 }

@@ -4,9 +4,12 @@
   "main": "paginated-resource.js",
   "dependencies": {
     "angular": "latest",
-    "angular-mocks": "latest",
     "angular-resource": "latest",
     "requirejs": "latest"
+  },
+  "devDependencies": {
+    "angular-mocks": "latest",
+    "jasmine-as-promised": "latest"
   },
   "ignore": [
     "**/.*",

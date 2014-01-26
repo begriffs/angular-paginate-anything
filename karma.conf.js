@@ -18,6 +18,7 @@ module.exports = function(config) {
       {pattern: 'bower_components/angular/angular.js', included: false},
       {pattern: 'bower_components/angular-mocks/angular-mocks.js', included: false},
       {pattern: 'bower_components/angular-resource/angular-resource.js', included: false},
+      {pattern: 'bower_components/jasmine-as-promised/src/jasmine-as-promised.js', included: false},
       {pattern: 'paginated-resource.js', included: false},
       {pattern: 'test/**/*-spec.js', included: false},
 

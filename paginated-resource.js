@@ -3,7 +3,7 @@ require(['angular', 'angular-resource'], function (ng) {
 
   ng.module('begriffs.paginated-resource', ['ngResource']).
 
-    factory('paginated-resource', ['$resource', '$http', function (resource, http) {
+    factory('paginated-resource', ['$resource', '$http', '$q', function (resource, $http, $q) {
       return function (url, range, params, actions) {
 
         actions = ng.extend(
@@ -18,9 +18,13 @@ require(['angular', 'angular-resource'], function (ng) {
               },
               interceptor: {
                 responseError: function(r) {
-                  if(r.status === 413 && r.headers('Accept-Ranges') === 'items') {
+                  if(r.status === 413 &&
+                     r.headers('Accept-Ranges') === 'items' &&
+                     !r.config.headers.Range) {
                     r.config.headers.Range = '0-24';
-                    return http(r.config);
+                    return $http(r.config);
+                  } else {
+                    return $q.reject(r);
                   }
                 }
               }
