@@ -77,17 +77,28 @@ define(
       });
 
       it('include next page information when available', function () {
-        $httpBackend.expectGET('/items', rangeHeaders()).respond(206, '[]',
+        $httpBackend.expectGET('/items', rangeHeaders([20,29])).respond(206, '[]',
           {
             'Accept-Ranges': 'items',
-            'Range': '0-24/100',
-            'Link': '</items>; rel="next"; items="25-49"'
+            'Range': '20-29/50',
+            'Link': [
+              '</items>; rel="prev"; items="10-19"',
+              '</items>; rel="next"; items="30-39"',
+              '</items>; rel="last"; items="40-49"',
+              '</items>; rel="first"; items="0-9"'
+            ]
           }
         );
-        $httpBackend.expectGET('/items', rangeHeaders([25, 49])).respond(206, '[]');
+        $httpBackend.expectGET('/items', rangeHeaders([30, 39])).respond(206, '[]');
+        $httpBackend.expectGET('/items', rangeHeaders([10, 19])).respond(206, '[]');
+        $httpBackend.expectGET('/items', rangeHeaders([40, 49])).respond(206, '[]');
+        $httpBackend.expectGET('/items', rangeHeaders([0, 9])).respond(206, '[]');
 
-        $resource('/items', [0,24]).query(function (data, headers) {
+        $resource('/items', [20,29]).query(function (data, headers) {
           $resource.nextPage(headers).query();
+          $resource.prevPage(headers).query();
+          $resource.lastPage(headers).query();
+          $resource.firstPage(headers).query();
         });
         $httpBackend.flush();
       });

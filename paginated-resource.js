@@ -40,13 +40,24 @@ require(['angular', 'angular-resource'], function (ng) {
         return $resource(url, params, actions);
       };
 
-      self.nextPage = function (headers) {
-        var match = (new RegExp('<(.*?)>;.*items="(\\d+)-(\\d+)"')).exec(headers('Link'));
-        if(match) {
-          return self(match[1], [+match[2], +match[3]]);
-        }
-        return null;
+      self.followLink = function (rel) {
+        return function (headers) {
+          var match, links = headers('Link').split(',');
+          for(var i in links) {
+            if(links[i].indexOf('rel="' + rel + '"') >= 0) {
+              match = (new RegExp('<(.*?)>;.*items="(\\d+)-(\\d+)"')).exec(links[i]);
+              if(match) {
+                return self(match[1], [+match[2], +match[3]]);
+              }
+            }
+          }
+          return null;
+        };
       };
+      self.nextPage  = self.followLink('next');
+      self.prevPage  = self.followLink('prev');
+      self.lastPage  = self.followLink('last');
+      self.firstPage = self.followLink('first');
 
       return self;
     }]);
