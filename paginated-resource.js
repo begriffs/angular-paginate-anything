@@ -4,7 +4,7 @@ require(['angular', 'angular-resource'], function (ng) {
   ng.module('begriffs.paginated-resource', ['ngResource']).
 
     factory('paginated-resource', ['$resource', '$http', '$q', function (resource, $http, $q) {
-      return function (url, range, params, actions) {
+      var self = function (url, range, params, actions) {
 
         actions = ng.extend(
           actions || {},
@@ -34,5 +34,15 @@ require(['angular', 'angular-resource'], function (ng) {
 
         return resource(url, params, actions);
       };
+
+      self.nextPage = function (headers) {
+        var match = (new RegExp('<(.*?)>;.*items="(\\d+)-(\\d+)"')).exec(headers('Link'));
+        if(match) {
+          return self(match[1], [+match[2], +match[3]]);
+        }
+        return null;
+      };
+
+      return self;
     }]);
 });
