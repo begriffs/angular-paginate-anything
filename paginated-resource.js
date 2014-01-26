@@ -3,8 +3,15 @@ require(['angular', 'angular-resource'], function (ng) {
 
   ng.module('begriffs.paginated-resource', ['ngResource']).
 
-    factory('paginated-resource', ['$resource', '$http', '$q', function (resource, $http, $q) {
+    factory('paginated-resource', ['$resource', '$http', '$q', function ($resource, $http, $q) {
       var self = function (url, range, params, actions) {
+        var headers = {};
+        if(range) {
+          headers = {
+            'Range-Unit': 'items',
+            'Range': range ? [range[0], range[1]].join('-') : ''
+          };
+        }
 
         actions = ng.extend(
           actions || {},
@@ -12,15 +19,13 @@ require(['angular', 'angular-resource'], function (ng) {
             query: {
               isArray: true,
               method: 'GET',
-              headers: {
-                'Range-Unit': 'items',
-                'Range': range ? [range[0], range[1]].join('-') : ''
-              },
+              headers: headers,
               interceptor: {
                 responseError: function(r) {
                   if(r.status === 413 &&
                      r.headers('Accept-Ranges') === 'items' &&
                      !r.config.headers.Range) {
+                    r.config.headers['Range-Unit'] = 'items';
                     r.config.headers.Range = '0-24';
                     return $http(r.config);
                   } else {
@@ -32,7 +37,7 @@ require(['angular', 'angular-resource'], function (ng) {
           }
         );
 
-        return resource(url, params, actions);
+        return $resource(url, params, actions);
       };
 
       self.nextPage = function (headers) {

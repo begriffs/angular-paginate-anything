@@ -18,9 +18,6 @@ define(
         expect($resource).toBeDefined();
       });
 
-      function incompleteRangeHeaders(hdrs) {
-        return hdrs['Range-Unit'] === 'items';
-      }
       function rangeHeaders(range) {
         return function (hdrs) {
           if(range) {
@@ -45,7 +42,7 @@ define(
 
         $resource('/items').query().$promise.then(handlers.success).catch(handlers.failure);
 
-        $httpBackend.expectGET('/items', incompleteRangeHeaders).respond(413,
+        $httpBackend.expectGET('/items').respond(413,
           '', { 'Accept-Ranges': 'items' }
         );
         $httpBackend.expectGET('/items', rangeHeaders()).respond(206,
@@ -69,7 +66,7 @@ define(
 
         $resource('/items', [0,24]).query().$promise.then(handlers.success).catch(handlers.failure);
 
-        $httpBackend.expectGET('/items', incompleteRangeHeaders).respond(413,
+        $httpBackend.expectGET('/items').respond(413,
           '', { 'Accept-Ranges': 'items' }
         );
         $httpBackend.flush(1);
