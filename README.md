@@ -83,7 +83,7 @@ Response
   Content-Range → */1000000
 ```
 
-#### Give me everything! Nope too much, bro.
+#### Give me everything! Nope too much.
 
 (Paginated resource will then retry with a default size range.)
 
