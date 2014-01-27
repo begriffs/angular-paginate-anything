@@ -54,10 +54,29 @@ require(['angular', 'angular-resource'], function (ng) {
           return null;
         };
       };
-      self.nextPage  = self.followLink('next');
-      self.prevPage  = self.followLink('prev');
-      self.lastPage  = self.followLink('last');
-      self.firstPage = self.followLink('first');
+      self.nextPage   = self.followLink('next');
+      self.prevPage   = self.followLink('prev');
+      self.lastPage   = self.followLink('last');
+      self.firstPage  = self.followLink('first');
+
+      self.totalItems = function (headers) {
+        var match = (new RegExp('/(\\d+|\\*)$')).exec(headers('Content-Range'));
+        if(match) {
+          if(match[1] === '*') {
+            return Infinity;
+          } else {
+            return +match[1];
+          }
+        }
+        return null;
+      };
+      self.currentRange = function (headers) {
+        var match = (new RegExp('^(\\d+)-(\\d+)/')).exec(headers('Content-Range'));
+        if(match) {
+          return [+match[1], +match[2]];
+        }
+        return null;
+      };
 
       return self;
     }]);

@@ -76,11 +76,11 @@ define(
         expect(handlers.failure).toHaveBeenCalled();
       });
 
-      it('include next page information when available', function () {
+      it('includes page navigation functions when available', function () {
         $httpBackend.expectGET('/items', rangeHeaders([20,29])).respond(206, '[]',
           {
             'Accept-Ranges': 'items',
-            'Range': '20-29/50',
+            'Content-Range': '20-29/50',
             'Link': [
               '</items>; rel="prev"; items="10-19"',
               '</items>; rel="next"; items="30-39"',
@@ -99,6 +99,27 @@ define(
           $resource.prevPage(headers).query();
           $resource.lastPage(headers).query();
           $resource.firstPage(headers).query();
+        });
+        $httpBackend.flush();
+      });
+
+      it('reports current range and total number of items', function () {
+        $httpBackend.expectGET('/items', rangeHeaders()).respond(206, '[]',
+          { 'Content-Range': '0-4/10' }
+        );
+        $resource('/items', [0,4]).query(function (data, headers) {
+          expect($resource.totalItems(headers)).toEqual(10);
+          expect($resource.currentRange(headers)).toEqual([0,4]);
+        });
+        $httpBackend.flush();
+      });
+
+      it('reports an infinite number of items when neccesary', function () {
+        $httpBackend.expectGET('/items', rangeHeaders()).respond(206, '[]',
+          { 'Content-Range': '0-4/*' }
+        );
+        $resource('/items', [0,4]).query(function (data, headers) {
+          expect($resource.totalItems(headers)).toEqual(Infinity);
         });
         $httpBackend.flush();
       });
