@@ -17,7 +17,7 @@ angular.module('app', ['begriffs.paginated-resource']).
     $scope.items = paginated('/items', [0, 9]).query();
 
     // get the next page
-    paginated('/items', [0, 9]).query(function (headers) {
+    paginated('/items', [0, 9]).query(function (data, headers) {
       $scope.nextItems = paginated.nextPage(headers).query();
     });
   }]);
