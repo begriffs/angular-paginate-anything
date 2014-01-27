@@ -3,20 +3,17 @@ define(
   function (ng, mock) {
     'use strict';
 
-    var $httpBackend, $resource;
+    var $httpBackend, $resource, $http;
     beforeEach(function () {
       mock.module('begriffs.paginated-resource');
-      mock.inject(['$httpBackend', 'paginated-resource', function (httpBackend, resource) {
+      mock.inject(['$httpBackend', 'paginated-resource', '$http', function (httpBackend, resource, http) {
         $httpBackend = httpBackend;
         $resource = resource;
+        $http = http;
       }]);
     });
 
     describe('paginated-resource', function () {
-
-      it('exists', function () {
-        expect($resource).toBeDefined();
-      });
 
       function rangeHeaders(range) {
         return function (hdrs) {
@@ -123,6 +120,20 @@ define(
         });
         $httpBackend.flush();
       });
+
+      it('infers total number of items from HEAD response', function () {
+        $httpBackend.expect('HEAD', '/items').respond(200, '',
+          {
+            'Accept-Ranges': 'items',
+            'Content-Range': '*/100'
+          }
+        );
+        $http({method: 'HEAD', url: '/items'}).success(function (data, status, headers) {
+          expect($resource.totalItems(headers)).toEqual(100);
+        });
+        $httpBackend.flush();
+      });
+
     });
   }
 );
