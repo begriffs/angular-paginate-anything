@@ -3,7 +3,9 @@
 [![Build Status](https://travis-ci.org/begriffs/angular-paginated-resource.png?branch=master)](https://travis-ci.org/begriffs/angular-paginated-resource)
 
 Server-side pagination the way the good
-[RFC2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16) intended it.
+[RFC2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16) intended it. Pairs
+nicely with [begriffs/clean_pagination](https://github.com/begriffs/clean_pagination) on the
+server side.
 
 ### Usage
 
