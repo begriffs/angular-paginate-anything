@@ -1,11 +1,9 @@
 {
-  "name": "angular-paginated-resource",
-  "version": "0.1.0",
-  "main": "paginated-resource.js",
+  "name": "angular-paginate-anything",
+  "version": "0.0.1",
+  "main": "src/paginate-anything.js",
   "dependencies": {
-    "angular": "latest",
-    "angular-resource": "latest",
-    "requirejs": "latest"
+    "angular": "latest"
   },
   "devDependencies": {
     "angular-mocks": "latest",

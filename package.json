@@ -1,25 +1,25 @@
 {
-  "name": "angular-paginated-resource",
-  "version": "0.1.0",
+  "name": "angular-paginate-anything",
+  "version": "0.0.1",
   "description": "",
-  "main": "paginated-resource.js",
+  "main": "src/paginate-anything.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/begriffs/angular-paginated-resource.git"
+    "url": "git://github.com/begriffs/angular-paginate-anything.git"
   },
   "devDependencies": {
-    "bower"                    : "latest",
-    "grunt"                    : "latest",
-    "grunt-bump"               : "latest",
-    "grunt-cli"                : "latest",
-    "grunt-contrib-jshint"     : "latest",
-    "grunt-contrib-watch"      : "latest",
-    "grunt-karma"              : "latest",
-    "jshint"                   : "latest",
-    "karma"                    : "latest",
-    "karma-jasmine"            : "latest",
-    "karma-phantomjs-launcher" : "latest",
-    "karma-requirejs"          : "latest"
+    "bower"                        : "latest",
+    "grunt"                        : "latest",
+    "grunt-bump"                   : "latest",
+    "grunt-cli"                    : "latest",
+    "grunt-contrib-jshint"         : "latest",
+    "grunt-contrib-watch"          : "latest",
+    "grunt-karma"                  : "latest",
+    "jshint"                       : "latest",
+    "karma"                        : "latest",
+    "karma-jasmine"                : "latest",
+    "karma-phantomjs-launcher"     : "latest",
+    "karma-ng-html2js-preprocessor": "latest"
   },
   "keywords": [],
   "author": {

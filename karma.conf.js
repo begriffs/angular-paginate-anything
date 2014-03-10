@@ -10,24 +10,25 @@ module.exports = function(config) {
 
 
     // frameworks to use
-    frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'bower_components/angular/angular.js', included: false},
-      {pattern: 'bower_components/angular-mocks/angular-mocks.js', included: false},
-      {pattern: 'bower_components/angular-resource/angular-resource.js', included: false},
-      {pattern: 'bower_components/jasmine-as-promised/src/jasmine-as-promised.js', included: false},
-      {pattern: 'paginated-resource.js', included: false},
-      {pattern: 'test/**/*-spec.js', included: false},
+      'bower_components/angular/angular.js',
+      'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/jasmine-as-promised/src/jasmine-as-promised.js',
+      'src/paginate-anything.js',
+      'test/**/*.js',
 
-      'test/configure-require.js'
+      'tpl/**/*.html'
     ],
 
 
-    // list of files to exclude
-    exclude: [ ],
+    // populate the angular template cache for tests
+    preprocessors: {
+      'tpl/*.html': ['ng-html2js']
+    },
 
 
     // test results reporter to use
@@ -54,8 +55,8 @@ module.exports = function(config) {
 
     plugins:[
       'karma-jasmine',
-      'karma-requirejs',
-      'karma-phantomjs-launcher'
+      'karma-phantomjs-launcher',
+      'karma-ng-html2js-preprocessor'
     ],
 
 
