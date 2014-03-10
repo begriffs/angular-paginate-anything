@@ -6,19 +6,19 @@
     directive('pagination', function () {
       return {
         restrict: 'E',
-        controller: 'PaginationController',
         scope: {
-          url: '=',
+          url: '@',
           headers: '&',
           collection: '=',
           perPage: '=',
           page: '='
         },
         templateUrl: 'tpl/paginate-anything.html',
-        replace: true
+        replace: true,
+        controller: ['$scope', function($scope) {
+          $scope.paginated = false;
+        }],
       };
-    }).
-    controller('PaginationController', ['$scope', function ($scope) {
-      $scope.totalItems = 0;
-    }]);
+    });
+
 }());

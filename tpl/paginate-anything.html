@@ -1,9 +1,11 @@
-<ul class="pagination">
-  <li><a href ng-click="first()">⇤</a></li>
-  <li><a href ng-click="prev()">←</a></li>
+<div class="pagination">
+  <ul class="links" ng-if="paginated === true">
+    <li><a href ng-click="first()">⇤</a></li>
+    <li><a href ng-click="prev()">←</a></li>
 
-  <li><a href ng-repeat="i in pages">{{i}}</a></li>
+    <li><a href ng-repeat="i in pages">{{i}}</a></li>
 
-  <li><a href ng-click="next()">→</a></li>
-  <li><a href ng-click="last()">⇥</a></li>
-</ul>
+    <li><a href ng-click="next()">→</a></li>
+    <li><a href ng-click="last()">⇥</a></li>
+  </ul>
+</div>
