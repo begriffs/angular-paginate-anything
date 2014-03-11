@@ -21,16 +21,28 @@
       $httpBackend.expectGET('/items').respond(200, '');
       var elt = $compile('<pagination url="/items"></pagination>')(scope);
       scope.$digest();
+      $httpBackend.flush();
       expect(elt.find('ul').length).toEqual(0);
     });
 
     it('does not appear for a ranged yet complete resource', function () {
       $httpBackend.expectGET('/items').respond(200,
-        '', { 'Accept-Ranges': 'items', Range: '0-24/25' }
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/25' }
       );
       var elt = $compile('<pagination url="/items"></pagination>')(scope);
       scope.$digest();
+      $httpBackend.flush();
       expect(elt.find('ul').length).toEqual(0);
+    });
+
+    it('appears for a ranged incomplete resource', function () {
+      $httpBackend.expectGET('/items').respond(200,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/26' }
+      );
+      var elt = $compile('<pagination url="/items"></pagination>')(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(elt.find('ul').length).toEqual(1);
     });
   });
 }());
