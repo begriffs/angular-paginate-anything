@@ -10,24 +10,49 @@
           url: '@',
           headers: '&',
           collection: '=',
-          perPage: '=',
-          page: '='
+
+          clientLimit: '=?',
+          perPage: '=?',
+          page: '=?',
+          numPages: '=?'
         },
         templateUrl: 'tpl/paginate-anything.html',
         replace: true,
         controller: ['$scope', '$http', function($scope, $http) {
-          $scope.paginated = false;
+          function gotoPage(i) {
+            $scope.page = i;
+            requestRange(i * $scope.perPage, (i+1) * $scope.perPage - 1);
+          }
 
-          $http({
-            method: 'GET',
-            url: $scope.url,
-            headers: $scope.headers
-          }).success(function (data, status, headers) {
-            var range = parseRange(headers('Content-Range'));
-            if(range && length(range) < range.total) {
-              $scope.paginated = true;
-            }
-          });
+          function requestRange(from, to) {
+            $http({
+              method: 'GET',
+              url: $scope.url,
+              headers: angular.extend(
+                {}, $scope.headers,
+                { 'Range-Unit': 'items', Range: [from, to].join('-') }
+              )
+            }).success(function (data, status, headers) {
+              $scope.collection = data;
+
+              var range = parseRange(headers('Content-Range'));
+              if(range && length(range) < range.total) {
+                $scope.paginated = true;
+                $scope.numPages = Math.ceil(range.total / length(range));
+              }
+            });
+          }
+
+
+          // function detectServerLimit(r, responseRange) { }
+
+          // function changePerPage(n) { }
+
+          // function changeClientLimit(n) { }
+
+          $scope.paginated = false;
+          gotoPage(0);
+
         }],
       };
     });
@@ -39,7 +64,7 @@
     return {
       from: m[1],
       to: m[2],
-      total: m[3]
+      total: m[3] === '*' ? Infinity : m[3]
     };
   }
 

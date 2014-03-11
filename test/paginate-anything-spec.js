@@ -16,10 +16,17 @@
     );
   });
 
+  var template = '<pagination ' + [
+    'collection="items"', 'page="page"',
+    'client-limit="clientLimit"',
+    'per-page="perPage"', 'url="/items"',
+    'num-pages="numPages"'
+  ].join(' ') + '></pagination>';
+
   describe('paginate-anything', function () {
     it('does not appear for a non-range-paginated resource', function () {
       $httpBackend.expectGET('/items').respond(200, '');
-      var elt = $compile('<pagination url="/items"></pagination>')(scope);
+      var elt = $compile(template)(scope);
       scope.$digest();
       $httpBackend.flush();
       expect(elt.find('ul').length).toEqual(0);
@@ -29,20 +36,41 @@
       $httpBackend.expectGET('/items').respond(200,
         '', { 'Range-Unit': 'items', 'Content-Range': '0-24/25' }
       );
-      var elt = $compile('<pagination url="/items"></pagination>')(scope);
+      var elt = $compile(template)(scope);
       scope.$digest();
       $httpBackend.flush();
       expect(elt.find('ul').length).toEqual(0);
     });
 
     it('appears for a ranged incomplete resource', function () {
-      $httpBackend.expectGET('/items').respond(200,
+      $httpBackend.expectGET('/items').respond(206,
         '', { 'Range-Unit': 'items', 'Content-Range': '0-24/26' }
       );
-      var elt = $compile('<pagination url="/items"></pagination>')(scope);
+      var elt = $compile(template)(scope);
       scope.$digest();
       $httpBackend.flush();
       expect(elt.find('ul').length).toEqual(1);
     });
+
+    it('starts at page 0', function () {
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/26' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.page).toEqual(0);
+    });
+
+    it('knows total pages', function () {
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/26' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numPages).toEqual(2);
+    });
+
   });
 }());
