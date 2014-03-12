@@ -3,7 +3,13 @@
 
   angular.module('begriffs.paginate-anything', []).
 
-    directive('pagination', function () {
+    constant('paginationConfig', {
+      clientLimit: 200,
+      perPage: 100,
+      perPagePresets: [25, 50, 100, 200, Infinity]
+    }).
+
+    directive('pagination', ['paginationConfig', function (config) {
       return {
         restrict: 'E',
         scope: {
@@ -19,6 +25,10 @@
         templateUrl: 'tpl/paginate-anything.html',
         replace: true,
         controller: ['$scope', '$http', function($scope, $http) {
+
+          $scope.paginated = false;
+          $scope.perPage = $scope.perPage || config.perPage;
+
           function gotoPage(i) {
             $scope.page = i;
             requestRange(i * $scope.perPage, (i+1) * $scope.perPage - 1);
@@ -39,10 +49,10 @@
               if(range && length(range) < range.total) {
                 $scope.paginated = true;
                 $scope.numPages = Math.ceil(range.total / length(range));
+                $scope.perPage = length(range);
               }
             });
           }
-
 
           // function detectServerLimit(r, responseRange) { }
 
@@ -50,12 +60,17 @@
 
           // function changeClientLimit(n) { }
 
-          $scope.paginated = false;
-          gotoPage(0);
+          gotoPage($scope.page || 0);
+
+          $scope.$watch('page', function(newPage, oldPage) {
+            if(newPage !== oldPage) {
+              gotoPage(newPage);
+            }
+          });
 
         }],
       };
-    });
+    }]);
 
 
   function parseRange(hdr) {

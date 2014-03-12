@@ -17,11 +17,32 @@
   });
 
   var template = '<pagination ' + [
-    'collection="items"', 'page="page"',
+    'collection="collection"', 'page="page"',
     'client-limit="clientLimit"',
     'per-page="perPage"', 'url="/items"',
     'num-pages="numPages"'
   ].join(' ') + '></pagination>';
+
+  function finiteStringBackend(s, maxRange) {
+    maxRange = maxRange || s.length;
+
+    return function(method, url, data, headers) {
+      var m = headers.Range.match(/^(\d+)-(\d+)$/);
+      if(m) {
+        m[1] = +m[1];
+        m[2] = +m[2];
+        m[2] = Math.min(m[2], m[1] + maxRange);
+        return [
+          m[2] < s.length ? 206 : 200,
+          s.slice(m[1], m[2]).split(''),
+          {
+            'Range-Unit': 'items',
+            'Content-Range': [m[1], Math.min(s.length, m[2])-1].join('-') + '/' + s.length
+          }
+        ];
+      }
+    };
+  }
 
   describe('paginate-anything', function () {
     it('does not appear for a non-range-paginated resource', function () {
@@ -72,5 +93,30 @@
       expect(scope.numPages).toEqual(2);
     });
 
+    it('discovers server range limit when range comes back small', function () {
+      $httpBackend.expectGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz', 2)
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numPages).toEqual(13);
+      expect(scope.perPage).toEqual(2);
+    });
+
+    it('changing the page on the scope updates the collection', function () {
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz', 20)
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.page = 1;
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.collection).toEqual(['u', 'v', 'w', 'x', 'y', 'z']);
+    });
   });
 }());
