@@ -34,22 +34,29 @@
             requestRange(i * $scope.perPage, (i+1) * $scope.perPage - 1);
           }
 
-          function requestRange(from, to) {
+          function requestRange(reqFrom, reqTo) {
             $http({
               method: 'GET',
               url: $scope.url,
               headers: angular.extend(
                 {}, $scope.headers,
-                { 'Range-Unit': 'items', Range: [from, to].join('-') }
+                { 'Range-Unit': 'items', Range: [reqFrom, reqTo].join('-') }
               )
             }).success(function (data, status, headers) {
               $scope.collection = data;
 
-              var range = parseRange(headers('Content-Range'));
-              if(range && length(range) < range.total) {
+              var response = parseRange(headers('Content-Range'));
+              if(response && length(response) < response.total) {
                 $scope.paginated = true;
-                $scope.numPages = Math.ceil(range.total / length(range));
-                $scope.perPage = length(range);
+
+                if(
+                  (reqTo       < response.total - 1) ||
+                  (response.to < response.total - 1 &&
+                                 response.total < reqTo)
+                ) {
+                  $scope.perPage = response.to - response.from + 1;
+                }
+                $scope.numPages = Math.ceil(response.total / length(response));
               }
             });
           }
@@ -77,9 +84,9 @@
     var m = hdr && hdr.match(/^(\d+)-(\d+)\/(\d+|\*)$/);
     if(!m) { return null; }
     return {
-      from: m[1],
-      to: m[2],
-      total: m[3] === '*' ? Infinity : m[3]
+      from: +m[1],
+      to: +m[2],
+      total: m[3] === '*' ? Infinity : +m[3]
     };
   }
 

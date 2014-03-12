@@ -31,7 +31,7 @@
       if(m) {
         m[1] = +m[1];
         m[2] = +m[2];
-        m[2] = Math.min(m[2], m[1] + maxRange);
+        m[2] = Math.min(m[2] + 1, m[1] + maxRange);
         return [
           m[2] < s.length ? 206 : 200,
           s.slice(m[1], m[2]).split(''),
@@ -117,6 +117,36 @@
       $httpBackend.flush();
 
       expect(scope.collection).toEqual(['u', 'v', 'w', 'x', 'y', 'z']);
+    });
+
+    it('can start on a different page', function () {
+      scope.perPage = 20;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz', 20)
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.collection).toEqual(['u', 'v', 'w', 'x', 'y', 'z']);
+    });
+
+    it('limited range at the end does not trigger resizing perPage', function () {
+      scope.perPage = 20;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz', 20)
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.page = 0;
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPage).toEqual(20);
     });
   });
 }());
