@@ -27,11 +27,12 @@
         controller: ['$scope', '$http', function($scope, $http) {
 
           $scope.paginated = false;
-          $scope.perPage = $scope.perPage || config.perPage;
+          $scope.perPage = $scope.perPage;
 
           function gotoPage(i) {
+            var pp = $scope.perPage || config.perPage;
             $scope.page = i;
-            requestRange(i * $scope.perPage, (i+1) * $scope.perPage - 1);
+            requestRange(i * pp, (i+1) * pp - 1);
           }
 
           function requestRange(reqFrom, reqTo) {
@@ -57,21 +58,23 @@
                   $scope.perPage = response.to - response.from + 1;
                 }
                 $scope.numPages = Math.ceil(response.total / length(response));
+                $scope.clientLimit = Math.min($scope.clientLimit || config.clientLimit, response.total);
               }
             });
           }
-
-          // function detectServerLimit(r, responseRange) { }
-
-          // function changePerPage(n) { }
-
-          // function changeClientLimit(n) { }
 
           gotoPage($scope.page || 0);
 
           $scope.$watch('page', function(newPage, oldPage) {
             if(newPage !== oldPage) {
               gotoPage(newPage);
+            }
+          });
+
+          $scope.$watch('perPage', function(newPp, oldPp) {
+            if(typeof(oldPp) === 'number' && newPp !== oldPp) {
+              var middle = ($scope.page + 0.49) * oldPp;
+              gotoPage(Math.floor(Math.min($scope.clientLimit - 1, middle) / newPp));
             }
           });
 

@@ -148,5 +148,105 @@
 
       expect(scope.perPage).toEqual(20);
     });
+
+    it('decreasing perPage keeps the middle item on the current page', function () {
+      scope.perPage = 3;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.perPage = 1;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.collection).toEqual(['e']);
+      expect(scope.page).toEqual(4);
+    });
+
+    it('increasing perPage keeps the middle item on the current page', function () {
+      scope.perPage = 12;
+      scope.page = 2;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.perPage = 13;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.page).toEqual(1);
+    });
+
+    it('changing perPage rounds down for middle item', function () {
+      scope.perPage = 2;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.perPage = 1;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.collection).toEqual(['c']);
+      expect(scope.page).toEqual(2);
+    });
+
+    it('halving perPage fixes the first item on the current page', function () {
+      scope.perPage = 4;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.perPage = 2;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.collection).toEqual(['e', 'f']);
+      expect(scope.page).toEqual(2);
+    });
+
+    it('doubling perPage fixes first item on the current page (for pp*2<remaining)', function () {
+      scope.perPage = 3;
+      scope.page = 2;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.perPage = 6;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.collection).toEqual(['g', 'h', 'i', 'j', 'k', 'l']);
+      expect(scope.page).toEqual(1);
+    });
+
+    it('doubling perPage does not fix the first item when new size >= total', function () {
+      scope.perPage = 20;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.perPage = 40;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.page).toEqual(0);
+    });
   });
 }());
