@@ -28,16 +28,19 @@
           function gotoPage(i) {
             var pp = $scope.perPage || 100;
             $scope.page = i;
-            requestRange(i * pp, (i+1) * pp - 1);
+            requestRange({
+              from: i * pp,
+              to: (i+1) * pp - 1
+            });
           }
 
-          function requestRange(reqFrom, reqTo) {
+          function requestRange(request) {
             $http({
               method: 'GET',
               url: $scope.url,
               headers: angular.extend(
                 {}, $scope.headers,
-                { 'Range-Unit': 'items', Range: [reqFrom, reqTo].join('-') }
+                { 'Range-Unit': 'items', Range: [request.from, request.to].join('-') }
               )
             }).success(function (data, status, headers) {
               $scope.collection = data;
@@ -50,9 +53,9 @@
                 $scope.paginated = true;
 
                 if(
-                  (reqTo       < response.total - 1) ||
+                  (request.to  < response.total - 1) ||
                   (response.to < response.total - 1 &&
-                                 response.total < reqTo)
+                                 response.total < request.to)
                 ) {
                   $scope.perPage = length(response);
                   $scope.serverLimit = length(response);
