@@ -20,7 +20,8 @@
     'collection="collection"', 'page="page"',
     'client-limit="clientLimit"',
     'per-page="perPage"', 'url="/items"',
-    'num-pages="numPages"'
+    'num-pages="numPages"',
+    'per-page-presets="perPagePresets"'
   ].join(' ') + '></pagination>';
 
   function finiteStringBackend(s, maxRange) {
@@ -247,6 +248,17 @@
       scope.$digest();
       $httpBackend.flush();
       expect(scope.page).toEqual(0);
+    });
+
+    it('small server limits adjusts perPagePresets', function () {
+      $httpBackend.expectGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz', 46)
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPagePresets).toEqual([5, 10, 25, 45]);
     });
   });
 }());

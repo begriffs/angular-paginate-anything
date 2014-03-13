@@ -3,13 +3,7 @@
 
   angular.module('begriffs.paginate-anything', []).
 
-    constant('paginationConfig', {
-      clientLimit: 200,
-      perPage: 100,
-      perPagePresets: [25, 50, 100, 200, Infinity]
-    }).
-
-    directive('pagination', ['paginationConfig', function (config) {
+    directive('pagination', function () {
       return {
         restrict: 'E',
         scope: {
@@ -17,20 +11,22 @@
           headers: '&',
           collection: '=',
 
-          clientLimit: '=?',
-          perPage: '=?',
           page: '=?',
-          numPages: '=?'
+          perPage: '=?',
+          perPagePresets: '=?',
+          numPages: '=?',
+          numItems: '=?'
         },
         templateUrl: 'tpl/paginate-anything.html',
         replace: true,
         controller: ['$scope', '$http', function($scope, $http) {
 
-          $scope.paginated = false;
-          $scope.perPage = $scope.perPage;
+          $scope.paginated      = false;
+          $scope.perPagePresets = [25, 50, 100, 200];
+          $scope.serverLimit    = Infinity; // it's not known yet
 
           function gotoPage(i) {
-            var pp = $scope.perPage || config.perPage;
+            var pp = $scope.perPage || 100;
             $scope.page = i;
             requestRange(i * pp, (i+1) * pp - 1);
           }
@@ -47,6 +43,9 @@
               $scope.collection = data;
 
               var response = parseRange(headers('Content-Range'));
+
+              $scope.numItems = response ? response.total : data.length;
+
               if(response && length(response) < response.total) {
                 $scope.paginated = true;
 
@@ -55,10 +54,10 @@
                   (response.to < response.total - 1 &&
                                  response.total < reqTo)
                 ) {
-                  $scope.perPage = response.to - response.from + 1;
+                  $scope.perPage = length(response);
+                  $scope.serverLimit = length(response);
                 }
                 $scope.numPages = Math.ceil(response.total / length(response));
-                $scope.clientLimit = Math.min($scope.clientLimit || config.clientLimit, response.total);
               }
             });
           }
@@ -74,13 +73,24 @@
           $scope.$watch('perPage', function(newPp, oldPp) {
             if(typeof(oldPp) === 'number' && newPp !== oldPp) {
               var middle = ($scope.page + 0.49) * oldPp;
-              gotoPage(Math.floor(Math.min($scope.clientLimit - 1, middle) / newPp));
+              gotoPage(Math.floor(Math.min($scope.numItems - 1, middle) / newPp));
+            }
+          });
+
+          $scope.$watch('serverLimit', function(newLimit, oldLimit) {
+            if(newLimit !== oldLimit) {
+              var level, limit = newLimit, presets = [];
+              for(level = 0; level < 4; level++) {
+                presets.unshift(5 * Math.round(limit / 5));
+                limit = limit / 2;
+              }
+              $scope.perPagePresets = presets;
             }
           });
 
         }],
       };
-    }]);
+    });
 
 
   function parseRange(hdr) {
