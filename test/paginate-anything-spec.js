@@ -18,8 +18,7 @@
 
   var template = '<pagination ' + [
     'collection="collection"', 'page="page"',
-    'client-limit="clientLimit"',
-    'per-page="perPage"', 'url="/items"',
+    'per-page="perPage"', 'url="\'/items\'"',
     'num-pages="numPages"',
     'per-page-presets="perPagePresets"'
   ].join(' ') + '></pagination>';
@@ -261,4 +260,5 @@
       expect(scope.perPagePresets).toEqual([5, 10, 25, 45]);
     });
   });
+
 }());

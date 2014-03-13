@@ -7,13 +7,15 @@
       return {
         restrict: 'E',
         scope: {
-          url: '@',
+          url: '=',
           headers: '&',
           collection: '=',
 
           page: '=?',
           perPage: '=?',
           perPagePresets: '=?',
+
+          // directive -> app communication only
           numPages: '=?',
           numItems: '=?'
         },

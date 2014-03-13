@@ -1,112 +1,80 @@
-<img src="img/paginated-resource-logo.png" alt="Logo" align="right" />
-## AngularJS Paginated Resource
-[![Build Status](https://travis-ci.org/begriffs/angular-paginated-resource.png?branch=master)](https://travis-ci.org/begriffs/angular-paginated-resource)
+<img src="img/paginate-anything-logo.png" alt="Logo" align="right" />
+## Angular Directive to Paginate Anything
+[![Build Status](https://travis-ci.org/begriffs/angular-paginate-anything.png?branch=master)](https://travis-ci.org/begriffs/angular-paginate-anything)
 
-Server-side pagination the way the good
-[RFC2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16) intended it. Pairs
-nicely with [begriffs/clean_pagination](https://github.com/begriffs/clean_pagination) on the
-server side.
+Add server-side pagination to any list or table on the page. This
+directive simply wires a variable in the local scope with a URL and
+adds a pagination user interface.
+
+### [DEMO](http://pagination.begriffs.com)
+
+** TODO: Add video **
 
 ### Usage
 
-```js
-angular.module('app', ['begriffs.paginated-resource']).
-  controller('MyController', ['$scope', 'paginated-resource', function ($scope, paginated) {
-    // just like $resource
-    $scope.items = paginated('/items').query();
+Include with bower
 
-    // or specify a range
-    $scope.items = paginated('/items', [0, 9]).query();
-
-    // get the next page
-    paginated('/items', [0, 9]).query(function (data, headers) {
-      $scope.nextItems = paginated.nextPage(headers).query();
-    });
-  }]);
+```sh
+bower install angular-paginate-anything
 ```
 
-### Methods
+Then in your view
+
+```html
+<!-- elements such as an ng-table reading from someVariable -->
+
+<pagination collection="someVariable" url="http://api.server.com/stuff"></pagination>
+```
+
+### Directive Attributes
 
 <table>
   <thead>
     <tr>
       <th>Name</th>
-      <th>args</th>
-      <th>returns</th>
+      <th>Description</th>
+      <th>Access</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>nextPage</td>
-      <td>headers</td>
-      <td>paginated resource or null</td>
+      <td>url</td>
+      <td>url of endpoint which returns a JSON array</td>
+      <td>Read/write. Changing it will reset to the first page.</td>
     </tr>
     <tr>
-      <td>prevPage</td>
       <td>headers</td>
-      <td>paginated resource or null</td>
+      <td>additional headers to send during request</td>
+      <td>Write-only.</td>
     </tr>
     <tr>
-      <td>lastPage</td>
-      <td>headers</td>
-      <td>paginated resource or null</td>
+      <td>page</td>
+      <td>the currently active page</td>
+      <td>Read/write. Writing changes pages. Zero-based.</td>
     </tr>
     <tr>
-      <td>firstPage</td>
-      <td>headers</td>
-      <td>paginated resource or null</td>
+      <td>per-page</td>
+      <td>Max number of elements per page</td>
+      <td>Read/write. The server may choose to send fewer items though.</td>
     </tr>
     <tr>
-      <td>totalItems</td>
-      <td>headers</td>
-      <td>integer, Infinity, or null</td>
+      <td>per-page-presets</td>
+      <td>Array of suggestions for per-page. Adjusts depending on server limits</td>
+      <td>Read/write.</td>
     </tr>
     <tr>
-      <td>currentRange</td>
-      <td>headers</td>
-      <td>[first, last] or null</td>
+      <td>num-items</td>
+      <td>Total items reported by server for the collection</td>
+      <td>Read-only.</td>
+    </tr>
+    <tr>
+      <td>num-pages</td>
+      <td>num-items / per-page</td>
+      <td>Read-only.</td>
     </tr>
   </tbody>
 </table>
 
-### Protocol
+### What your server needs to do
 
-This Angular module communicates with compatible servers through HTTP range headers.
-
-#### Do you paginate with ranges? Yes, I do.
-
-Also there are one million total items in this collection.
-
-```
-Request
-  HEAD /biglist
-Response
-  Accept-Ranges → items
-  Content-Range → */1000000
-```
-
-#### Give me everything! Nope too much.
-
-(Paginated resource will then retry with a default size range.)
-
-```
-Request
-  GET /biglist
-Response
-  Accept-Ranges → items
-  Status → 413 Request Entity Too Large
-```
-
-#### Give me a range. OK here it is, with related links.
-
-```
-Request
-  GET /biglist; Range-Unit: items; Range: 0-99
-Response
-  Status → 206
-  Range-Unit → items
-  Content-Range → 0-99/1000000
-  Link → </biglist>; rel="next"; items="100-199",
-         </biglist>; rel="first"; items="0-99",
-         </biglist>; rel="last"; items="999900-999999"
-```
+**TODO:** describe.
