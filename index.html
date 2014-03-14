@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
-    <script src="//raw.githack.com/begriffs/angular-paginate-anything/master/src/paginate-anything.js"></script>
+    <script src="https://raw.githack.com/begriffs/angular-paginate-anything/master/src/paginate-anything.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
 
     <title>Demo angular-paginate-anything</title>
@@ -14,12 +14,19 @@
     <ul>
       <li ng-repeat="a in alphabet">{{a}}</li>
     </ul>
-    <pagination url="http://pagination.begriffs.com/letters" per-page="5"></pagination>
+    <pagination
+      per-page="5"
+      url="'http://pagination.begriffs.com/letters'"
+      collection="alphabet"
+      template-url="https://raw.githack.com/begriffs/angular-paginate-anything/master/tpl/paginate-anything.html"
+    ></pagination>
   </body>
   <script>
   angular.module("demoapp", ['begriffs.paginate-anything'])
+    .config(function($sceDelegateProvider) {
+      $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://raw.githack.com/begriffs/**']);
+    })
     .controller("DemoController", function($scope, $templateCache) {
-      $scope.alphabet = [];
     });
 </script>
 </html>
