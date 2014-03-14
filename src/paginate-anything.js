@@ -34,14 +34,14 @@
 
           $scope.Math = window.Math; // for the template
 
-          function gotoPage(i) {
+          $scope.gotoPage = function (i) {
             var pp = $scope.perPage || 100;
             $scope.page = i;
             requestRange({
               from: i * pp,
               to: (i+1) * pp - 1
             });
-          }
+          };
 
           function requestRange(request) {
             $http({
@@ -74,18 +74,18 @@
             });
           }
 
-          gotoPage($scope.page || 0);
+          $scope.gotoPage($scope.page || 0);
 
           $scope.$watch('page', function(newPage, oldPage) {
             if(newPage !== oldPage) {
-              gotoPage(newPage);
+              $scope.gotoPage(newPage);
             }
           });
 
           $scope.$watch('perPage', function(newPp, oldPp) {
             if(typeof(oldPp) === 'number' && newPp !== oldPp) {
               var middle = ($scope.page + 0.49) * oldPp;
-              gotoPage(Math.floor(Math.min($scope.numItems - 1, middle) / newPp));
+              $scope.gotoPage(Math.floor(Math.min($scope.numItems - 1, middle) / newPp));
             }
           });
 
