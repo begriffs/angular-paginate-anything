@@ -1,18 +1,18 @@
 <div class="pagination">
   <ul class="links" ng-if="paginated === true">
-    <li ng-class="{disabled: page <= 0}"><a href>&laquo;</a></li>
+    <li ng-class="{disabled: page <= 0}"><a href ng-click="gotoPage(page-1)">&laquo;</a></li>
 
-    <li ng-if="page - linkGroupSize > 0"><a href>1</a></li>
+    <li ng-if="page - linkGroupSize > 0"><a href ng-click="gotoPage(0)">1</a></li>
     <li ng-if="page - linkGroupSize > 1">&hellip;</li>
 
     <li ng-repeat=
       "p in [Math.max(0, page - linkGroupSize), Math.min(page + linkGroupSize, numPages-1)] | makeRange">
-      <a href>{{p+1}}</a>
+      <a href ng-click="gotoPage(p)">{{p+1}}</a>
     </li>
 
     <li ng-if="page + linkGroupSize < numPages - 2">&hellip;</li>
-    <li ng-if="page + linkGroupSize < numPages - 1"><a href>{{numPages}}</a></li>
+    <li ng-if="page + linkGroupSize < numPages - 1"><a href ng-click="gotoPage(numPages-1)">{{numPages}}</a></li>
 
-    <li ng-class="{disabled: page >= numPages - 1}"><a href>&raquo;</a></li>
+    <li ng-class="{disabled: page >= numPages - 1}"><a href ng-click="gotoPage(page+1)">&raquo;</a></li>
   </ul>
 </div>
