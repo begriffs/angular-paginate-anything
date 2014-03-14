@@ -69,7 +69,7 @@
                   $scope.perPage = length(response);
                   $scope.serverLimit = length(response);
                 }
-                $scope.numPages = Math.ceil(response.total / length(response));
+                $scope.numPages = Math.ceil(response.total / $scope.perPage);
               }
             });
           }

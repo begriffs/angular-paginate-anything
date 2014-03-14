@@ -143,11 +143,15 @@
       scope.$digest();
       $httpBackend.flush();
 
+      expect(scope.perPage).toEqual(20);
+      expect(scope.numPages).toEqual(2);
+
       scope.page = 0;
       scope.$digest();
       $httpBackend.flush();
 
       expect(scope.perPage).toEqual(20);
+      expect(scope.numPages).toEqual(2);
     });
 
     it('decreasing perPage keeps the middle item on the current page', function () {
