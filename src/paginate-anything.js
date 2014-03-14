@@ -20,7 +20,9 @@
           numPages: '=?',
           numItems: '=?'
         },
-        templateUrl: 'tpl/paginate-anything.html',
+        templateUrl: function(element, attr) {
+          return attr.templateUrl || 'tpl/paginate-anything.html';
+        },
         replace: true,
         controller: ['$scope', '$http', function($scope, $http) {
 
