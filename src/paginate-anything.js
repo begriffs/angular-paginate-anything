@@ -27,7 +27,8 @@
           $scope.paginated      = false;
           $scope.perPagePresets = [25, 50, 100, 200];
           $scope.serverLimit    = Infinity; // it's not known yet
-          $scope.linkGroupSize  = $scope.linkGroupSize || 3;
+          var lgs = $scope.linkGroupSize;
+          $scope.linkGroupSize  = typeof(lgs) === 'number' ? lgs : 3;
 
           $scope.Math = window.Math; // for the template
 

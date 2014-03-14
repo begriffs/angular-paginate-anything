@@ -335,6 +335,62 @@
       linksShouldBe(elt, ['1', '…', '9', '10', '11', '12', '13']);
     });
 
+    it('show final ellipsis when range is close', function () {
+      scope.perPage = 1;
+      scope.linkGroupSize = 0;
+      scope.page = 23;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '…', '24', '…', '26']);
+    });
+
+    it('show final page when range is very close', function () {
+      scope.perPage = 1;
+      scope.linkGroupSize = 0;
+      scope.page = 24;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '…', '25', '26']);
+    });
+
+    it('show initial ellipsis when range is close', function () {
+      scope.perPage = 1;
+      scope.linkGroupSize = 0;
+      scope.page = 2;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '…', '3', '…', '26']);
+    });
+
+    it('show initial page when range is very close', function () {
+      scope.perPage = 1;
+      scope.linkGroupSize = 0;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '2', '…', '26']);
+    });
+
     it('adds ellipses on both sides', function () {
       scope.linkGroupSize = 2;
       scope.perPage = 2;

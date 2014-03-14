@@ -10,8 +10,8 @@
       <a href>{{p+1}}</a>
     </li>
 
-    <li ng-if="page + linkGroupSize < numPages - 3">&hellip;</li>
-    <li ng-if="page + linkGroupSize < numPages - 2"><a href>{{numPages}}</a></li>
+    <li ng-if="page + linkGroupSize < numPages - 2">&hellip;</li>
+    <li ng-if="page + linkGroupSize < numPages - 1"><a href>{{numPages}}</a></li>
 
     <li ng-class="{disabled: page >= numPages - 1}"><a href>&raquo;</a></li>
   </ul>
