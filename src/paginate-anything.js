@@ -35,6 +35,10 @@
           $scope.Math = window.Math; // for the template
 
           $scope.gotoPage = function (i) {
+            if(i < 0 || i >= $scope.numPages) {
+              return;
+            }
+
             var pp = $scope.perPage || 100;
             $scope.page = i;
             requestRange({
