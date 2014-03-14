@@ -20,7 +20,8 @@
     'collection="collection"', 'page="page"',
     'per-page="perPage"', 'url="\'/items\'"',
     'num-pages="numPages"',
-    'per-page-presets="perPagePresets"'
+    'per-page-presets="perPagePresets"',
+    'link-group-size="linkGroupSize"'
   ].join(' ') + '></pagination>';
 
   function finiteStringBackend(s, maxRange) {
@@ -258,6 +259,94 @@
       $httpBackend.flush();
 
       expect(scope.perPagePresets).toEqual([5, 10, 25, 45]);
+    });
+
+  });
+
+  function linksShouldBe(elt, ar) {
+    ar.unshift('«');
+    ar.push('»');
+    for(var i = 0; i < ar.length; i++) {
+      expect(elt.find('li').eq(i).text().trim()).toEqual(ar[i]);
+    }
+  }
+
+  describe('ui', function () {
+    it('disables next link on last page', function () {
+      scope.perPage = 2;
+      scope.page = 12;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(elt.find('li').eq(-1).hasClass('disabled')).toBe(true);
+    });
+
+    it('enables next link on next-to-last page', function () {
+      scope.perPage = 2;
+      scope.page = 11;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(elt.find('li').eq(-1).hasClass('disabled')).toBe(false);
+    });
+
+    it('omits ellipses if possible', function () {
+      scope.perPage = 5;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmno') // 15 total
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '2', '3']);
+    });
+
+    it('adds ellipses at end', function () {
+      scope.perPage = 2;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '2', '3', '4', '…', '13']);
+    });
+
+    it('adds ellipses at beginning', function () {
+      scope.perPage = 2;
+      scope.page = 11;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '…', '9', '10', '11', '12', '13']);
+    });
+
+    it('adds ellipses on both sides', function () {
+      scope.linkGroupSize = 2;
+      scope.perPage = 2;
+      scope.page = 5;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '…', '4', '5', '6', '7', '8', '…', '13']);
     });
   });
 
