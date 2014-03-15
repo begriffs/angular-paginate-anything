@@ -287,7 +287,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      expect(elt.find('li').eq(-1).hasClass('disabled')).toBe(true);
+      expect(elt.find('ul').eq(0).find('li').eq(-1).hasClass('disabled')).toBe(true);
     });
 
     it('enables next link on next-to-last page', function () {

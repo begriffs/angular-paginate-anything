@@ -18,4 +18,11 @@
 
     <li ng-class="{disabled: page >= numPages - 1}"><a href ng-click="gotoPage(page+1)">&raquo;</a></li>
   </ul>
+  <div ng-if="paginated === true">
+    <select ng-if="paginated === true"
+            ng-model="perPage"
+            ng-options="p for p in perPagePresets">
+    </select>
+    per page
+  </div>
 </div>

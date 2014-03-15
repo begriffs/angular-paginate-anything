@@ -117,9 +117,12 @@
 
           $scope.$watch('serverLimit', function(newLimit, oldLimit) {
             if(newLimit !== oldLimit) {
-              var level, limit = newLimit, presets = [];
+              var level, limit = newLimit, presets = [], val;
               for(level = 0; level < 4; level++) {
-                presets.unshift(5 * Math.round(limit / 5));
+                val = 5 * Math.round(limit / 5);
+                if(presets[0] !== val) {
+                  presets.unshift(val);
+                }
                 limit = limit / 2;
               }
               $scope.perPagePresets = presets;
