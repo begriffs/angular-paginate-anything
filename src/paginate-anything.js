@@ -47,6 +47,24 @@
             });
           };
 
+          $scope.linkGroupFirst = function() {
+            var rightDebt = Math.max( 0,
+              $scope.linkGroupSize - ($scope.numPages - 1 - $scope.page)
+            );
+            return Math.max( 0,
+              $scope.page - ($scope.linkGroupSize + rightDebt)
+            );
+          };
+
+          $scope.linkGroupLast = function() {
+            var leftDebt = Math.max( 0,
+              $scope.linkGroupSize - $scope.page
+            );
+            return Math.min( $scope.numPages-1,
+              $scope.page + ($scope.linkGroupSize + leftDebt)
+            );
+          };
+
           function requestRange(request) {
             $http({
               method: 'GET',

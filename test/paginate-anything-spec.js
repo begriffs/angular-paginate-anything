@@ -316,6 +316,7 @@
 
     it('adds ellipses at end', function () {
       scope.perPage = 2;
+      scope.linkGroupSize = 2;
       $httpBackend.whenGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
       );
@@ -323,11 +324,12 @@
       scope.$digest();
       $httpBackend.flush();
 
-      linksShouldBe(elt, ['1', '2', '3', '4', '…', '13']);
+      linksShouldBe(elt, ['1', '2', '3', '4', '5', '…', '13']);
     });
 
     it('adds ellipses at beginning', function () {
       scope.perPage = 2;
+      scope.linkGroupSize = 2;
       scope.page = 11;
       $httpBackend.whenGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
@@ -407,6 +409,34 @@
       $httpBackend.flush();
 
       linksShouldBe(elt, ['1', '…', '4', '5', '6', '7', '8', '…', '13']);
+    });
+
+    it('number of links does not change when group is cropped at start', function () {
+      scope.linkGroupSize = 1;
+      scope.perPage = 1;
+      scope.page = 0;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcd')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '2', '3', '4']);
+    });
+
+    it('number of links does not change when group is cropped at end', function () {
+      scope.linkGroupSize = 1;
+      scope.perPage = 1;
+      scope.page = 3;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcd')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '2', '3', '4']);
     });
   });
 
