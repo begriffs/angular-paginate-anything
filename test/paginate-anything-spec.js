@@ -20,6 +20,7 @@
     'collection="collection"', 'page="page"',
     'per-page="perPage"', 'url="\'/items\'"',
     'num-pages="numPages"',
+    'num-items="numItems"',
     'per-page-presets="perPagePresets"',
     'link-group-size="linkGroupSize"'
   ].join(' ') + '></pagination>';
@@ -465,6 +466,33 @@
       $httpBackend.flush();
 
       linksShouldBe(elt, ['1', '…', '9', '10', '11', '12', '13']);
+    });
+  });
+
+  describe('infinite lists', function () {
+    it('know total pages', function () {
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/*' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numItems).toEqual(Infinity);
+      expect(scope.numPages).toEqual(Infinity);
+    });
+
+    it('do not display a last page button', function () {
+      scope.linkGroupSize = 0;
+      scope.perPage = 1000000;
+      scope.page = 0;
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-999999/*' }
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '2', '3', '…']);
     });
   });
 

@@ -65,6 +65,10 @@
             );
           };
 
+          $scope.isFinite = function() {
+            return $scope.numPages < Infinity;
+          };
+
           function requestRange(request) {
             $http({
               method: 'GET',

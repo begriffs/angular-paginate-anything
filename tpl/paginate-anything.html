@@ -14,7 +14,7 @@
     </li>
 
     <li ng-if="linkGroupLast() < numPages - 2" class="disabled"><a href>&hellip;</a></li>
-    <li ng-if="linkGroupLast() < numPages - 1"><a href ng-click="gotoPage(numPages-1)">{{numPages}}</a></li>
+    <li ng-if="isFinite() && linkGroupLast() < numPages - 1"><a href ng-click="gotoPage(numPages-1)">{{numPages}}</a></li>
 
     <li ng-class="{disabled: page >= numPages - 1}"><a href ng-click="gotoPage(page+1)">&raquo;</a></li>
   </ul>
