@@ -49,7 +49,7 @@
 
           $scope.linkGroupFirst = function() {
             var rightDebt = Math.max( 0,
-              $scope.linkGroupSize - ($scope.numPages - 1 - $scope.page)
+              $scope.linkGroupSize - ($scope.numPages - 1 - ($scope.page + 2))
             );
             return Math.max( 0,
               $scope.page - ($scope.linkGroupSize + rightDebt)
@@ -58,7 +58,7 @@
 
           $scope.linkGroupLast = function() {
             var leftDebt = Math.max( 0,
-              $scope.linkGroupSize - $scope.page
+              $scope.linkGroupSize - ($scope.page - 2)
             );
             return Math.min( $scope.numPages-1,
               $scope.page + ($scope.linkGroupSize + leftDebt)

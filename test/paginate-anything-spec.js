@@ -324,7 +324,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      linksShouldBe(elt, ['1', '2', '3', '4', '5', '…', '13']);
+      linksShouldBe(elt, ['1', '2', '3', '4', '5', '6', '7', '…', '13']);
     });
 
     it('adds ellipses at beginning', function () {
@@ -338,7 +338,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      linksShouldBe(elt, ['1', '…', '9', '10', '11', '12', '13']);
+      linksShouldBe(elt, ['1', '…', '7', '8', '9', '10', '11', '12', '13']);
     });
 
     it('show final ellipsis when range is close', function () {
@@ -366,7 +366,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      linksShouldBe(elt, ['1', '…', '25', '26']);
+      linksShouldBe(elt, ['1', '…', '24', '25', '26']);
     });
 
     it('show initial ellipsis when range is close', function () {
@@ -394,7 +394,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      linksShouldBe(elt, ['1', '2', '…', '26']);
+      linksShouldBe(elt, ['1', '2', '3', '…', '26']);
     });
 
     it('adds ellipses on both sides', function () {
@@ -437,6 +437,34 @@
       $httpBackend.flush();
 
       linksShouldBe(elt, ['1', '2', '3', '4']);
+    });
+
+    it('first two pages do not count against padding debt', function () {
+      scope.linkGroupSize = 1;
+      scope.perPage = 2;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '2', '3', '4', '5', '…', '13']);
+    });
+
+    it('last two pages do not count against padding debt', function () {
+      scope.linkGroupSize = 1;
+      scope.perPage = 2;
+      scope.page = 11;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      linksShouldBe(elt, ['1', '…', '9', '10', '11', '12', '13']);
     });
   });
 
