@@ -15,8 +15,9 @@
       <li ng-repeat="a in alphabet">{{a}}</li>
     </ul>
     <pagination
-      per-page="5"
+      per-page="2"
       url="'http://pagination.begriffs.com/letters'"
+      link-group-size="1"
       collection="alphabet"
       template-url="https://raw.githack.com/begriffs/angular-paginate-anything/master/tpl/paginate-anything.html"
     ></pagination>
