@@ -22,7 +22,9 @@
     'num-pages="numPages"',
     'num-items="numItems"',
     'per-page-presets="perPagePresets"',
-    'link-group-size="linkGroupSize"'
+    'link-group-size="linkGroupSize"',
+    'server-limit="serverLimit"',
+    'client-limit="clientLimit"'
   ].join(' ') + '></pagination>';
 
   function finiteStringBackend(s, maxRange) {
@@ -255,17 +257,6 @@
       expect(scope.page).toEqual(0);
     });
 
-    it('small server limits adjusts perPagePresets', function () {
-      $httpBackend.expectGET('/items').respond(
-        finiteStringBackend('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz', 46)
-      );
-      $compile(template)(scope);
-      scope.$digest();
-      $httpBackend.flush();
-
-      expect(scope.perPagePresets).toEqual([5, 10, 25, 45]);
-    });
-
   });
 
   function linksShouldBe(elt, ar) {
@@ -493,6 +484,55 @@
       $httpBackend.flush();
 
       linksShouldBe(elt, ['1', '2', '3', '…']);
+    });
+  });
+
+  describe('per-page presets', function () {
+    it('divides by halves down to 10', function () {
+      scope.clientLimit = 200;
+      $httpBackend.expectGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvw') // length == 23
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPagePresets).toEqual([12, 25, 50, 100, 200]);
+    });
+
+    it('adjusts for small server limits', function () {
+      $httpBackend.expectGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz', 46)
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPagePresets).toEqual([11, 23, 46]);
+    });
+
+    it('does not adjust if client limit < server limit', function () {
+      scope.clientLimit = 40;
+      $httpBackend.expectGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz', 46)
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPagePresets).toEqual([10, 20, 40]);
+    });
+
+    it('includes current per-page as an option', function () {
+      scope.perPage = 35;
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-36/100' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPagePresets).toEqual([17, 35, 55, 76, 117, 200]);
     });
   });
 

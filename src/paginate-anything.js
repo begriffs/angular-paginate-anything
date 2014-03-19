@@ -1,6 +1,16 @@
 (function() {
   'use strict';
 
+  function halfsies(from, to) {
+    var halves = [], j, Math = window.Math;
+    do {
+      halves.unshift(to);
+      j = Math.round((to - from) / 2);
+      to = to - j;
+    } while(j > Math.max(from/2, 9));
+    return halves;
+  }
+
   angular.module('begriffs.paginate-anything', []).
 
     directive('pagination', function () {
@@ -14,11 +24,13 @@
           page: '=?',
           perPage: '=?',
           perPagePresets: '=?',
+          clientLimit: '=?',
           linkGroupSize: '=?',
 
           // directive -> app communication only
           numPages: '=?',
-          numItems: '=?'
+          numItems: '=?',
+          serverLimit: '=?'
         },
         templateUrl: function(element, attr) {
           return attr.templateUrl || 'tpl/paginate-anything.html';
@@ -27,12 +39,20 @@
         controller: ['$scope', '$http', function($scope, $http) {
 
           $scope.paginated      = false;
-          $scope.perPagePresets = [25, 50, 100, 200];
           $scope.serverLimit    = Infinity; // it's not known yet
-          var lgs = $scope.linkGroupSize;
-          $scope.linkGroupSize  = typeof(lgs) === 'number' ? lgs : 3;
+          $scope.Math           = window.Math; // Math for the template
 
-          $scope.Math = window.Math; // for the template
+          var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
+          $scope.linkGroupSize  = typeof(lgs) === 'number' ? lgs : 3;
+          $scope.clientLimit    = typeof(cl) === 'number' ? cl : 200;
+          $scope.updatePresets  = function () {
+            var first  = halfsies(0, window.Math.min($scope.perPage || 100, $scope.clientLimit)),
+                second = halfsies($scope.perPage || 100,
+                  window.Math.min($scope.serverLimit, $scope.clientLimit)
+                );
+            if(first[first.length - 1] === second[0]) { first.pop(); }
+            $scope.perPagePresets = first.concat(second);
+          };
 
           $scope.gotoPage = function (i) {
             if(i < 0 || i >= $scope.numPages) {
@@ -88,19 +108,24 @@
                 $scope.paginated = true;
 
                 if(
-                  (request.to  < response.total - 1) ||
-                  (response.to < response.total - 1 &&
-                                 response.total < request.to)
+                  ( request.to < response.total - 1 && response.total < Infinity) ||
+                  (response.to < response.total - 1 && response.total < request.to)
                 ) {
-                  $scope.perPage = length(response);
-                  $scope.serverLimit = length(response);
+                  if(!$scope.perPage || length(response) < $scope.perPage) {
+                    $scope.perPage = $scope.Math.min(
+                      length(response),
+                      $scope.clientLimit
+                    );
+                    $scope.serverLimit = length(response);
+                  }
                 }
-                $scope.numPages = Math.ceil(response.total / $scope.perPage);
+                $scope.numPages = Math.ceil(response.total / ($scope.perPage || 1));
               }
             });
           }
 
           $scope.gotoPage($scope.page || 0);
+          $scope.updatePresets();
 
           $scope.$watch('page', function(newPage, oldPage) {
             if(newPage !== oldPage) {
@@ -117,15 +142,7 @@
 
           $scope.$watch('serverLimit', function(newLimit, oldLimit) {
             if(newLimit !== oldLimit) {
-              var level, limit = newLimit, presets = [], val;
-              for(level = 0; level < 4; level++) {
-                val = 5 * Math.round(limit / 5);
-                if(presets[0] !== val) {
-                  presets.unshift(val);
-                }
-                limit = limit / 2;
-              }
-              $scope.perPagePresets = presets;
+              $scope.updatePresets();
             }
           });
 
