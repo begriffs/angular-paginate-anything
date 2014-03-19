@@ -136,7 +136,7 @@
           $scope.$watch('perPage', function(newPp, oldPp) {
             if(typeof(oldPp) === 'number' && newPp !== oldPp) {
               var middle = ($scope.page + 0.49) * oldPp;
-              $scope.gotoPage(Math.floor(Math.min($scope.numItems - 1, middle) / newPp));
+              $scope.page = Math.floor(Math.min($scope.numItems - 1, middle) / newPp);
             }
           });
 
