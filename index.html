@@ -8,6 +8,13 @@
     <script src="https://raw.githack.com/begriffs/angular-paginate-anything/master/src/paginate-anything.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
     <style>
+      ul.pagination, div.perPage {
+        display: inline-block;
+        vertical-align: middle;
+      }
+      div.perPage {
+        margin-left: 1em;
+      }
       ul.pagination > li a {
         display: inline-block;
         min-width: 3em;
@@ -18,9 +25,6 @@
     <title>Demo angular-paginate-anything</title>
   </head>
   <body ng-app="demoapp" ng-controller="DemoController">
-    <ul>
-      <li ng-repeat="a in alphabet">{{a}}</li>
-    </ul>
     <pagination
       per-page="perPage"
       url="'http://pagination.begriffs.com/letters'"
@@ -28,6 +32,10 @@
       collection="alphabet"
       template-url="https://raw.githack.com/begriffs/angular-paginate-anything/master/tpl/paginate-anything.html"
     ></pagination>
+
+    <ul>
+      <li ng-repeat="a in alphabet">{{a}}</li>
+    </ul>
   </body>
   <script>
   angular.module("demoapp", ['begriffs.paginate-anything'])
