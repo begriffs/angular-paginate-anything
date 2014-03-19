@@ -157,6 +157,21 @@
       expect(scope.numPages).toEqual(2);
     });
 
+    it('increasing perPage while staying on same page has an effect', function () {
+      scope.perPage = 4;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.perPage = 16;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.page).toEqual(0);
+    });
+
     it('decreasing perPage keeps the middle item on the current page', function () {
       scope.perPage = 3;
       scope.page = 1;

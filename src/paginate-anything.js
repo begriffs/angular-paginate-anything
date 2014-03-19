@@ -139,8 +139,13 @@
             if(typeof(oldPp) === 'number' && newPp !== oldPp) {
               var middle = $scope.page * oldPp;
               middle += (Math.min(($scope.page+1) * oldPp, $scope.numItems - 1) - middle) / 2.01;
+              var newPage = Math.floor(middle / newPp);
 
-              $scope.page = Math.floor(middle / newPp);
+              if($scope.page !== newPage) {
+                $scope.page = newPage; // $digest() will trigger gotoPage
+              } else { // sometimes upping perPage stays on a page (e.g. page 0)
+                $scope.gotoPage($scope.page);
+              }
             }
           });
 
