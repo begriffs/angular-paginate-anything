@@ -257,6 +257,57 @@
       expect(scope.page).toEqual(0);
     });
 
+    it('halving perPage doubles numPages', function () {
+      scope.perPage = 4;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numPages).toEqual(7);
+
+      scope.perPage = 2;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numPages).toEqual(13);
+    });
+
+    it('doubling perPage halves numPages', function () {
+      scope.perPage = 2;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numPages).toEqual(13);
+
+      scope.perPage = 4;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numPages).toEqual(7);
+    });
+
+    it('perPage >= total makes numPages=1', function () {
+      scope.perPage = 4;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numPages).toEqual(7);
+
+      scope.perPage = 26;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numPages).toEqual(1);
+    });
+
   });
 
   function linksShouldBe(elt, ar) {

@@ -104,19 +104,21 @@
 
               $scope.numItems = response ? response.total : data.length;
 
-              if(response && length(response) < response.total) {
-                $scope.paginated = true;
+              if(response) {
+                if(length(response) < response.total) {
+                  $scope.paginated = true;
 
-                if(
-                  ( request.to < response.total - 1 && response.total < Infinity) ||
-                  (response.to < response.total - 1 && response.total < request.to)
-                ) {
-                  if(!$scope.perPage || length(response) < $scope.perPage) {
-                    $scope.perPage = $scope.Math.min(
-                      length(response),
-                      $scope.clientLimit
-                    );
-                    $scope.serverLimit = length(response);
+                  if(
+                    ( request.to < response.total - 1 && response.total < Infinity) ||
+                    (response.to < response.total - 1 && response.total < request.to)
+                  ) {
+                    if(!$scope.perPage || length(response) < $scope.perPage) {
+                      $scope.perPage = $scope.Math.min(
+                        length(response),
+                        $scope.clientLimit
+                      );
+                      $scope.serverLimit = length(response);
+                    }
                   }
                 }
                 $scope.numPages = Math.ceil(response.total / ($scope.perPage || 1));
