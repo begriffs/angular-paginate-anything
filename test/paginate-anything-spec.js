@@ -174,6 +174,23 @@
       expect(scope.page).toEqual(4);
     });
 
+    it('tiny last page and decreasing perPage preserves the middle item', function () {
+      scope.perPage = 300;
+      scope.page = 0;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.perPage = 1;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.collection).toEqual(['m']);
+      expect(scope.page).toEqual(12);
+    });
+
     it('increasing perPage keeps the middle item on the current page', function () {
       scope.perPage = 12;
       scope.page = 2;
