@@ -22,7 +22,7 @@
       <li ng-repeat="a in alphabet">{{a}}</li>
     </ul>
     <pagination
-      per-page="1"
+      per-page="perPage"
       url="'http://pagination.begriffs.com/letters'"
       link-group-size="2"
       collection="alphabet"
@@ -34,7 +34,8 @@
     .config(function($sceDelegateProvider) {
       $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://raw.githack.com/begriffs/**']);
     })
-    .controller("DemoController", function($scope, $templateCache) {
+    .controller("DemoController", function($scope) {
+      $scope.perPage = 4;
     });
 </script>
 </html>
