@@ -55,7 +55,7 @@
           };
 
           $scope.gotoPage = function (i) {
-            if(i < 0 || i >= $scope.numPages) {
+            if(i < 0 || (i-1)*$scope.perPage > $scope.numItems) {
               return;
             }
 

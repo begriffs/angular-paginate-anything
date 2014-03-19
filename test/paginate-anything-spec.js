@@ -308,6 +308,22 @@
       expect(scope.numPages).toEqual(1);
     });
 
+    it('keeps page in-bounds when shrinking perPage', function () {
+      scope.perPage = 16;
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.perPage = 4;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.page).toEqual(5);
+    });
+
   });
 
   function linksShouldBe(elt, ar) {
