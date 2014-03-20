@@ -129,11 +129,15 @@
                     (response.to < response.total - 1 && response.total < request.to)
                   ) {
                     if(!$scope.perPage || length(response) < $scope.perPage) {
+                      var idx = monkeyIndex(length(response));
+                      if(monkeyNumber(idx) > length(response)) {
+                        idx--;
+                      }
+                      $scope.serverLimit = monkeyNumber(idx);
                       $scope.perPage = $scope.Math.min(
-                        length(response),
+                        $scope.serverLimit,
                         $scope.clientLimit
                       );
-                      $scope.serverLimit = length(response);
                     }
                   }
                 }

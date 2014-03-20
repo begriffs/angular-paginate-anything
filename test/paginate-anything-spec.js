@@ -120,7 +120,8 @@
       scope.$digest();
       $httpBackend.flush();
 
-      expect(scope.collection).toEqual(['u', 'v', 'w', 'x', 'y', 'z']);
+      // perPage actually bumps down to 10 because it is a monkey number
+      expect(scope.collection).toEqual(['k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']);
     });
 
     it('can start on a different page', function () {
@@ -607,7 +608,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      expect(scope.perPagePresets).toEqual([10, 25, 50]);
+      expect(scope.perPagePresets).toEqual([10, 25]);
     });
 
     it('does not adjust if client limit < server limit', function () {
@@ -619,7 +620,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      expect(scope.perPagePresets).toEqual([10, 25, 50]);
+      expect(scope.perPagePresets).toEqual([10, 25]);
     });
 
   });
