@@ -1,14 +1,29 @@
 (function() {
   'use strict';
 
-  function halfsies(from, to) {
-    var halves = [], j, Math = window.Math;
-    do {
-      halves.unshift(to);
-      j = Math.round((to - from) / 2);
-      to = to - j;
-    } while(j > Math.max(from/2, 9));
-    return halves;
+  // 1 2 5 10 25 50 100 250 500 etc
+  function monkeyNumber(i) {
+    var adjust = [1, 2.5, 5];
+    return Math.floor(Math.pow(10, Math.floor(i/3)) * adjust[i % 3]);
+  }
+
+  // the j such that monkeyNumber(j) is closest to i
+  function monkeyIndex(i) {
+    if(i < 1) { return 0; }
+    var group = Math.floor(Math.log(i) / Math.LN10),
+        offset = i/(2.5 * Math.pow(10, group));
+    if(offset >= 3) {
+      group++;
+      offset = 0;
+    }
+    return 3*group + Math.round(Math.min(2, offset));
+  }
+
+  function closestMonkey(i) {
+    if(i === Infinity) {
+      return Infinity;
+    }
+    return monkeyNumber(monkeyIndex(i));
   }
 
   angular.module('begriffs.paginate-anything', []).
@@ -44,14 +59,15 @@
 
           var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
           $scope.linkGroupSize  = typeof(lgs) === 'number' ? lgs : 3;
-          $scope.clientLimit    = typeof(cl) === 'number' ? cl : 200;
+          $scope.clientLimit    = closestMonkey(typeof(cl) === 'number' ? cl : 250);
           $scope.updatePresets  = function () {
-            var first  = halfsies(0, window.Math.min($scope.perPage || 100, $scope.clientLimit)),
-                second = halfsies($scope.perPage || 100,
-                  window.Math.min($scope.serverLimit, $scope.clientLimit)
-                );
-            if(first[first.length - 1] === second[0]) { first.pop(); }
-            $scope.perPagePresets = first.concat(second);
+            var presets = [];
+            for(var i = Math.min(3, monkeyIndex($scope.perPage || 250));
+                i <= monkeyIndex(Math.min($scope.clientLimit, $scope.serverLimit));
+                i++) {
+              presets.push(monkeyNumber(i));
+            }
+            $scope.perPagePresets = presets;
           };
 
           $scope.gotoPage = function (i) {

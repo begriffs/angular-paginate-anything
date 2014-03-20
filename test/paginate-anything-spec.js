@@ -587,7 +587,7 @@
   });
 
   describe('per-page presets', function () {
-    it('divides by halves down to 10', function () {
+    it('goes in monkey number increments', function () {
       scope.clientLimit = 200;
       $httpBackend.expectGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvw') // length == 23
@@ -596,7 +596,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      expect(scope.perPagePresets).toEqual([12, 25, 50, 100, 200]);
+      expect(scope.perPagePresets).toEqual([10, 25, 50, 100, 250]);
     });
 
     it('adjusts for small server limits', function () {
@@ -607,7 +607,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      expect(scope.perPagePresets).toEqual([11, 23, 46]);
+      expect(scope.perPagePresets).toEqual([10, 25, 50]);
     });
 
     it('does not adjust if client limit < server limit', function () {
@@ -619,20 +619,9 @@
       scope.$digest();
       $httpBackend.flush();
 
-      expect(scope.perPagePresets).toEqual([10, 20, 40]);
+      expect(scope.perPagePresets).toEqual([10, 25, 50]);
     });
 
-    it('includes current per-page as an option', function () {
-      scope.perPage = 35;
-      $httpBackend.expectGET('/items').respond(206,
-        '', { 'Range-Unit': 'items', 'Content-Range': '0-36/100' }
-      );
-      $compile(template)(scope);
-      scope.$digest();
-      $httpBackend.flush();
-
-      expect(scope.perPagePresets).toEqual([17, 35, 55, 76, 117, 200]);
-    });
   });
 
 }());
