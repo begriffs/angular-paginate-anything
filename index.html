@@ -25,17 +25,45 @@
     <title>Demo angular-paginate-anything</title>
   </head>
   <body ng-app="demoapp" ng-controller="DemoController">
-    <pagination
-      per-page="perPage"
-      url="'http://pagination.begriffs.com/letters'"
-      link-group-size="2"
-      collection="alphabet"
-      template-url="https://raw.githack.com/begriffs/angular-paginate-anything/master/tpl/paginate-anything.html"
-    ></pagination>
 
-    <ul>
-      <li ng-repeat="a in alphabet">{{a}}</li>
-    </ul>
+    <div class="row">
+      <div class="col-md-6">
+        <h1>English Words</h1>
+        <pagination
+          per-page="words.perPage"
+          client-limit="words.clientLimit"
+          url="'http://pagination.begriffs.com/words'"
+          link-group-size="2"
+          collection="wordData"
+          template-url="https://raw.githack.com/begriffs/angular-paginate-anything/master/tpl/paginate-anything.html"
+        ></pagination>
+      </div>
+      <div class="col-md-6">
+        <h1>Numbers</h1>
+        <pagination
+          per-page="numbers.perPage"
+          client-limit="numbers.clientLimit"
+          url="'http://pagination.begriffs.com/numbers'"
+          link-group-size="2"
+          collection="numberData"
+          template-url="https://raw.githack.com/begriffs/angular-paginate-anything/master/tpl/paginate-anything.html"
+        ></pagination>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <ul>
+          <li ng-repeat="w in wordData">{{w}}</li>
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <ul>
+          <li ng-repeat="n in numberData">{{n}}</li>
+        </ul>
+      </div>
+    </div>
   </body>
   <script>
   angular.module("demoapp", ['begriffs.paginate-anything'])
@@ -43,7 +71,14 @@
       $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://raw.githack.com/begriffs/**']);
     })
     .controller("DemoController", function($scope) {
-      $scope.perPage = 4;
+      $scope.words = {
+        perPage: 15,
+        clientLimit: 1000
+      };
+      $scope.numbers = {
+        perPage: 10,
+        clientLimit: 800
+      };
     });
 </script>
 </html>
