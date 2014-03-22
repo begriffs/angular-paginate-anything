@@ -75,7 +75,7 @@
               return;
             }
 
-            var pp = $scope.perPage || 100;
+            var pp = closestMonkey($scope.perPage || 100);
             $scope.page = i;
             requestRange({
               from: i * pp,

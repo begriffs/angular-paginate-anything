@@ -125,7 +125,7 @@
     });
 
     it('can start on a different page', function () {
-      scope.perPage = 20;
+      scope.perPage = 25;
       scope.page = 1;
       $httpBackend.whenGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyz', 20)
@@ -134,7 +134,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      expect(scope.collection).toEqual(['u', 'v', 'w', 'x', 'y', 'z']);
+      expect(scope.collection).toEqual(['z']);
     });
 
     it('limited range at the end does not trigger resizing perPage', function () {
@@ -257,8 +257,8 @@
       expect(scope.page).toEqual(2);
     });
 
-    it('doubling perPage fixes first item on the current page (for pp*2<remaining)', function () {
-      scope.perPage = 3;
+    it('doubling perPage fixes first item on the current page (if already divides larger size)', function () {
+      scope.perPage = 5;
       scope.page = 2;
       $httpBackend.whenGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
@@ -267,10 +267,10 @@
       scope.$digest();
       $httpBackend.flush();
 
-      scope.perPage = 6;
+      scope.perPage = 10;
       scope.$digest();
       $httpBackend.flush();
-      expect(scope.collection).toEqual(['g', 'h', 'i', 'j', 'k', 'l']);
+      expect(scope.collection).toEqual([ 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']);
       expect(scope.page).toEqual(1);
     });
 
@@ -325,7 +325,7 @@
     });
 
     it('perPage >= total makes numPages=1', function () {
-      scope.perPage = 4;
+      scope.perPage = 5;
       scope.page = 1;
       $httpBackend.whenGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
@@ -333,9 +333,9 @@
       $compile(template)(scope);
       scope.$digest();
       $httpBackend.flush();
-      expect(scope.numPages).toEqual(7);
+      expect(scope.numPages).toEqual(6);
 
-      scope.perPage = 26;
+      scope.perPage = 50;
       scope.$digest();
       $httpBackend.flush();
       expect(scope.numPages).toEqual(1);
