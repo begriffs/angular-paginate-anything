@@ -125,7 +125,7 @@
                   $scope.paginated = true;
 
                   if(
-                    ( request.to < response.total - 1 && response.total < Infinity) ||
+                    ( request.to < response.total - 1) ||
                     (response.to < response.total - 1 && response.total < request.to)
                   ) {
                     if(!$scope.perPage || length(response) < $scope.perPage) {

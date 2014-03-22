@@ -585,6 +585,17 @@
 
       linksShouldBe(elt, ['1', '2', '3', '…']);
     });
+
+    it('detects server perPage limit', function () {
+      scope.perPage = 1000000;
+      $httpBackend.whenGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/*' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.perPage).toEqual(25);
+    });
   });
 
   describe('per-page presets', function () {
