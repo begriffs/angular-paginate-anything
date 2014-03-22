@@ -173,8 +173,8 @@
       expect(scope.page).toEqual(0);
     });
 
-    it('decreasing perPage keeps the middle item on the current page', function () {
-      scope.perPage = 3;
+    it('decreasing perPage keeps the first item on the current page', function () {
+      scope.perPage = 5;
       scope.page = 1;
       $httpBackend.whenGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
@@ -186,12 +186,12 @@
       scope.perPage = 1;
       scope.$digest();
       $httpBackend.flush();
-      expect(scope.collection).toEqual(['e']);
-      expect(scope.page).toEqual(4);
+      expect(scope.collection).toEqual(['f']);
+      expect(scope.page).toEqual(5);
     });
 
-    it('tiny last page and decreasing perPage preserves the middle item', function () {
-      scope.perPage = 300;
+    it('tiny last page and decreasing perPage preserves the first item', function () {
+      scope.perPage = 500;
       scope.page = 0;
       $httpBackend.whenGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
@@ -203,8 +203,8 @@
       scope.perPage = 1;
       scope.$digest();
       $httpBackend.flush();
-      expect(scope.collection).toEqual(['m']);
-      expect(scope.page).toEqual(12);
+      expect(scope.collection).toEqual(['a']);
+      expect(scope.page).toEqual(0);
     });
 
     it('increasing perPage keeps the middle item on the current page', function () {
@@ -342,8 +342,8 @@
     });
 
     it('keeps page in-bounds when shrinking perPage', function () {
-      scope.perPage = 16;
-      scope.page = 1;
+      scope.perPage = 10;
+      scope.page = 2;
       $httpBackend.whenGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
       );
@@ -351,10 +351,10 @@
       scope.$digest();
       $httpBackend.flush();
 
-      scope.perPage = 4;
+      scope.perPage = 2;
       scope.$digest();
       $httpBackend.flush();
-      expect(scope.page).toEqual(5);
+      expect(scope.page).toEqual(10);
     });
 
   });
