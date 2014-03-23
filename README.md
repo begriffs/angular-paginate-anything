@@ -6,9 +6,7 @@ Add server-side pagination to any list or table on the page. This
 directive simply wires a variable in the local scope with a URL and
 adds a pagination user interface.
 
-### [DEMO](http://pagination.begriffs.com)
-
-** TODO: Add video **
+### [DEMO](http://begriffs.github.io/angular-paginate-anything/)
 
 ### Usage
 
@@ -18,13 +16,33 @@ Include with bower
 bower install angular-paginate-anything
 ```
 
+Load the javascript and declare your Angular dependency
+
+```js
+angular.module('myModule', ['begriffs.paginate-anything']);
+```
+
 Then in your view
 
 ```html
 <!-- elements such as an ng-table reading from someVariable -->
 
-<pagination collection="someVariable" url="http://api.server.com/stuff"></pagination>
+<pagination collection="someVariable" url="'http://api.server.com/stuff'"></pagination>
 ```
+
+The `pagination` directive uses an external template stored in
+`tpl/paginate-anything.html`.  Host it in a place accessible to
+your page and set the `template-url` attribute (see below).
+
+### Benefits
+
+* Attaches to anything — ng-repeat, ng-grid, ngTable etc
+* Server side pagination scales to large data
+* Works with any MIME type through RFC2616 Range headers
+* Handles finite or infinite lists
+* Negotiates per-page limits with server
+* Keeps items in view when changing page size
+* Twitter Bootstrap compatible markup
 
 ### Directive Attributes
 
@@ -63,6 +81,16 @@ Then in your view
       <td>Read/write.</td>
     </tr>
     <tr>
+      <td>client-limit</td>
+      <td>Biggest page size the directive will show. Server response may be smaller.</td>
+      <td>Read/write.</td>
+    </tr>
+    <tr>
+      <td>link-group-size</td>
+      <td>Number of elements surrounding current page. <img src="img/link-group-size.png" alt="illustration" /></td>
+      <td>Read/write.</td>
+    </tr>
+    <tr>
       <td>num-items</td>
       <td>Total items reported by server for the collection</td>
       <td>Read-only.</td>
@@ -72,9 +100,22 @@ Then in your view
       <td>num-items / per-page</td>
       <td>Read-only.</td>
     </tr>
+    <tr>
+      <td>server-limit</td>
+      <td>Maximum results the server will send (Infinity if not yet detected)</td>
+      <td>Read-only.</td>
+    </tr>
   </tbody>
 </table>
 
+### How to deal with sorting, filtering and facets?
+
+Your server is responsible for interpreting URLs to provide these
+features.  You can connect the `url` attribute of this directive
+to a scope variable and change the url to sort etc. Changing the
+url causes the pagination to reset to the first page and maintain
+page size.
+
 ### What your server needs to do
 
-**TODO:** describe.
+
