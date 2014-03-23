@@ -112,10 +112,64 @@ your page and set the `template-url` attribute (see below).
 
 Your server is responsible for interpreting URLs to provide these
 features.  You can connect the `url` attribute of this directive
-to a scope variable and change the url to sort etc. Changing the
-url causes the pagination to reset to the first page and maintain
-page size.
+to a scope variable and adjust the variable with query params and
+whatever else your server recognizes. Changing the url causes the
+pagination to reset to the first page and maintain page size.
 
 ### What your server needs to do
 
+This directive decorates AJAX requests to your server with some
+simple, standard headers. You read these headers to determine the
+limit and offset of the requested data. Your need to set response
+headers to indicate the range returned and the total number of items
+in the collection.
 
+You can write the logic yourself, or try a pre-made library like
+[begriffs/clean_pagination](https://github.com/begriffs/clean_pagination).
+
+For a reference of a properly configured server, visit
+[pagination.begriffs.com](http://pagination.begriffs.com/).
+
+Example HTTP transaction that requests the first twenty-five items
+and a response that provides them and says there are one hundred
+total items.
+
+Request
+
+```HTTP
+GET /items HTTP/1.1
+Range-Unit: items
+Range: 0-24
+```
+
+Response
+
+```HTTP
+HTTP/1.1 206 Partial Content
+Accept-Ranges: items
+Content-Range: 0-24/100
+Range-Unit: items
+Content-Type: application/json
+
+[ etc, etc, ... ]
+```
+
+In short your server parses the `Range` header to find the zero-based
+start and end item. It includes a `Content-Range` header in the response
+saying the range it chooses to return, along with the total items after
+a slash, where total items can be "*" meaning unknown or infinite.
+
+To do all this header stuff you'll need to enable CORS on your server.
+In a Rails app you can do this by adding the following to `config/application.rb`:
+
+```ruby
+config.middleware.use Rack::Cors do
+  allow do
+    origins '*'
+    resource '*',
+      :headers => :any,
+      :methods => [:get, :options],
+      :expose => ['Content-Range', 'Accept-Ranges']
+  end
+end
+```
