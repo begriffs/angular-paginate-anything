@@ -173,3 +173,12 @@ config.middleware.use Rack::Cors do
   end
 end
 ```
+
+For a more complete implementation including other appropriate responses
+see my clean_pagination gem.
+
+### Further reading
+
+* [Hypertext Transfer Protocol (HTTP/1.1): Range Requests](http://greenbytes.de/tech/webdav/draft-ietf-httpbis-p5-range-latest.html)
+* [RFC2616 Section 3.12, custom range units](http://www.ietf.org/rfc/rfc2616.txt)
+* [Beyond HTTP Header Links](http://blog.begriffs.com/2014/03/beyond-http-header-links.html)
