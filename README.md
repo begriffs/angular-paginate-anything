@@ -3,8 +3,12 @@
 [![Build Status](https://travis-ci.org/begriffs/angular-paginate-anything.png?branch=master)](https://travis-ci.org/begriffs/angular-paginate-anything)
 
 Add server-side pagination to any list or table on the page. This
-directive simply wires a variable in the local scope with a URL and
-adds a pagination user interface.
+directive connects a variable of your choice on the local scope with
+data provied on a given URL. It provides a pagination user interface
+that triggers updates to the variable through paginated AJAX requests.
+
+Pagination is a distinct concern and should be handled separately from
+other app logic. Do it right, do it in one place. Paginate anything!
 
 ### [DEMO](http://begriffs.github.io/angular-paginate-anything/)
 
@@ -124,15 +128,15 @@ limit and offset of the requested data. Your need to set response
 headers to indicate the range returned and the total number of items
 in the collection.
 
-You can write the logic yourself, or try a pre-made library like
-[begriffs/clean_pagination](https://github.com/begriffs/clean_pagination).
+You can write the logic yourself, or try a **pre-made library like
+[begriffs/clean_pagination](https://github.com/begriffs/clean_pagination).**
 
 For a reference of a properly configured server, visit
 [pagination.begriffs.com](http://pagination.begriffs.com/).
 
-Example HTTP transaction that requests the first twenty-five items
-and a response that provides them and says there are one hundred
-total items.
+Here is an example HTTP transaction that requests the first twenty-five
+items and a response that provides them and says there are one
+hundred total items.
 
 Request
 
@@ -155,9 +159,10 @@ Content-Type: application/json
 ```
 
 In short your server parses the `Range` header to find the zero-based
-start and end item. It includes a `Content-Range` header in the response
-saying the range it chooses to return, along with the total items after
-a slash, where total items can be "*" meaning unknown or infinite.
+start and end item. It includes a `Content-Range` header in the
+response disclosing the range it chooses to return, along with the
+total items after a slash, where total items can be "*" meaning
+unknown or infinite.
 
 To do all this header stuff you'll need to enable CORS on your server.
 In a Rails app you can do this by adding the following to `config/application.rb`:
@@ -175,10 +180,17 @@ end
 ```
 
 For a more complete implementation including other appropriate responses
-see my clean_pagination gem.
+see my [clean_pagination](https://github.com/begriffs/clean_pagination) gem.
 
 ### Further reading
 
 * [Hypertext Transfer Protocol (HTTP/1.1): Range Requests](http://greenbytes.de/tech/webdav/draft-ietf-httpbis-p5-range-latest.html)
 * [RFC2616 Section 3.12, custom range units](http://www.ietf.org/rfc/rfc2616.txt)
 * [Beyond HTTP Header Links](http://blog.begriffs.com/2014/03/beyond-http-header-links.html)
+
+### Thanks
+
+Thanks to [Steve Klabnik](https://twitter.com/steveklabnik) for
+discussions about doing hypermedia/HATEOAS right, and to [Rebecca
+Wright](https://twitter.com/rebecca_wrights) for reviewing and
+improving my original user interface ideas for the paginator.
