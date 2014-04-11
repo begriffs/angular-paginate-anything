@@ -26,6 +26,10 @@
   </head>
   <body class="container" ng-app="demoapp" ng-controller="DemoController">
 
+    <h4 class="row" ng-hide="words">
+      Waiting for Heroku server <a href="http://pagination.begriffs.com">http://pagination.begriffs.com</a> to wake up...
+    </h4>
+
     <div class="row">
       <pagination
         per-page="perPage"
