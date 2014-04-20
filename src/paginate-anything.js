@@ -174,6 +174,12 @@
             }
           });
 
+          $scope.$watch('url', function(newUrl, oldUrl) {
+            if(newUrl !== oldUrl) {
+              $scope.gotoPage(0);
+            }
+          });
+
         }],
       };
     }).

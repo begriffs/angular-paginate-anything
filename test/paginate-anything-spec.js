@@ -636,4 +636,30 @@
 
   });
 
+  describe('filtering', function () {
+    var template = '<pagination ' + [
+      'collection="collection"', 'page="page"',
+      'per-page="perPage"', 'url="url"'
+    ].join(' ') + '></pagination>';
+
+    it('reloads data from page 0 when url changes', function () {
+      $httpBackend.whenGET('/letters').respond(finiteStringBackend('abcd'));
+      $httpBackend.whenGET('/numbers').respond(finiteStringBackend('1234'));
+      scope.url     = '/letters';
+      scope.perPage = 2;
+      scope.page    = 1;
+
+      $compile(template)(scope);
+
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.url = '/numbers';
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.page).toEqual(0);
+      expect(scope.collection).toEqual(['1', '2']);
+    });
+  });
 }());
