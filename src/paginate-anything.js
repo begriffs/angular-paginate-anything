@@ -28,7 +28,7 @@
 
   angular.module('begriffs.paginate-anything', []).
 
-    directive('pagination', function () {
+    directive('begriffs.pagination', function () {
       return {
         restrict: 'E',
         scope: {

@@ -16,7 +16,7 @@
     );
   });
 
-  var template = '<pagination ' + [
+  var template = '<begriffs.pagination ' + [
     'collection="collection"', 'page="page"',
     'per-page="perPage"', 'url="\'/items\'"',
     'num-pages="numPages"',
@@ -25,7 +25,7 @@
     'link-group-size="linkGroupSize"',
     'server-limit="serverLimit"',
     'client-limit="clientLimit"'
-  ].join(' ') + '></pagination>';
+  ].join(' ') + '/>';
 
   function finiteStringBackend(s, maxRange) {
     maxRange = maxRange || s.length;
@@ -637,10 +637,10 @@
   });
 
   describe('filtering', function () {
-    var template = '<pagination ' + [
+    var template = '<begriffs.pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="url"'
-    ].join(' ') + '></pagination>';
+    ].join(' ') + '/>';
 
     it('reloads data from page 0 when url changes', function () {
       $httpBackend.whenGET('/letters').respond(finiteStringBackend('abcd'));
