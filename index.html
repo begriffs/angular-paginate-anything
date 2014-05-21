@@ -31,14 +31,13 @@
     </h4>
 
     <div class="row">
-      <pagination
+      <begriffs.pagination
         per-page="perPage"
         client-limit="clientLimit"
         url="'http://pagination.begriffs.com/words'"
         link-group-size="2"
         collection="words"
-        template-url="https://raw.githack.com/begriffs/angular-paginate-anything/master/tpl/paginate-anything.html"
-      ></pagination>
+        template-url="https://raw.githack.com/begriffs/angular-paginate-anything/master/tpl/paginate-anything.html" />
       <ul>
         <li ng-repeat="w in words">{{w}}</li>
       </ul>
