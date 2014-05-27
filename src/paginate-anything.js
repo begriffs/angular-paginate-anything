@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-//Ingore Monkeys
+  // Ignore Monkeys
   // 1 2 5 10 25 50 100 250 500 etc
   function monkeyNumber(i) {
     var adjust = [1, 2.5, 5];
