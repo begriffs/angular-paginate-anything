@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-
+//Ingore Monkeys
   // 1 2 5 10 25 50 100 250 500 etc
   function monkeyNumber(i) {
     var adjust = [1, 2.5, 5];
@@ -75,7 +75,7 @@
               return;
             }
 
-            var pp = closestMonkey($scope.perPage || 100);
+            var pp = $scope.perPage; closestMonkey($scope.perPage || 100);
             $scope.page = i;
             requestRange({
               from: i * pp,
