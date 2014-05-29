@@ -109,6 +109,11 @@ your page and set the `template-url` attribute (see below).
       <td>Maximum results the server will send (Infinity if not yet detected)</td>
       <td>Read-only.</td>
     </tr>
+    <tr>
+      <td>reload-page</td>
+      <td>If set to true, the current page is reloaded.</td>
+      <td>Read/write.</td>
+    </tr>
   </tbody>
 </table>
 
