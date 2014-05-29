@@ -183,7 +183,7 @@
           });
 		  
           $scope.$watch('reloadPage', function(newVal, oldVal) {
-            if(newVal == true && oldVal == false) {
+            if(newVal === true && oldVal === false) {
                 $scope.reloadPage = false;
                 $scope.gotoPage($scope.page);
             }
