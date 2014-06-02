@@ -31,7 +31,10 @@ Then in your view
 ```html
 <!-- elements such as an ng-table reading from someVariable -->
 
-<begriffs.pagination collection="someVariable" url="'http://api.server.com/stuff'" />
+<begriffs.pagination
+  collection="someVariable"
+  url="'http://api.server.com/stuff'">
+</begriffs.pagination>
 ```
 
 The `pagination` directive uses an external template stored in
