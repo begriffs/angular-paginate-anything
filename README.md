@@ -128,8 +128,27 @@ limit and offset of the requested data. Your need to set response
 headers to indicate the range returned and the total number of items
 in the collection.
 
-You can write the logic yourself, or try a **pre-made library like
-[begriffs/clean_pagination](https://github.com/begriffs/clean_pagination).**
+You can write the logic yourself, or use a **pre-made** server
+side logic.
+
+<table>
+  <thead>
+    <tr>
+      <th>Framework</th>
+      <th>Solution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ruby on Rails</td>
+      <td><a href="https://github.com/begriffs/clean_pagination">begriffs/clean_pagination</a> gem</td>
+    </tr>
+    <tr>
+      <td>Express for Node</td>
+      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-to-configure-NodeJS">Node JS howto</a></td>
+    </tr>
+  </tbody>
+</table>
 
 For a reference of a properly configured server, visit
 [pagination.begriffs.com](http://pagination.begriffs.com/).
