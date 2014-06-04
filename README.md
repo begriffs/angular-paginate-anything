@@ -91,7 +91,7 @@ your page and set the `template-url` attribute (see below).
     </tr>
     <tr>
       <td>monkey-number</td>
-      <td>If true, forces the per-page and client-limit value to be a value in the sequence of 1 2 5 10 25 50 100 250 500 ...</td>
+      <td>If true, forces the per-page and client-limit value to be a value in the sequence of  1, 2, 5, 10, 25, 50...</td>
       <td>Read/write.</td>
     </tr>
     <tr>
