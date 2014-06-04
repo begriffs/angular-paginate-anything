@@ -93,6 +93,11 @@ your page and set the `template-url` attribute (see below).
       <td>Read/write.</td>
     </tr>
     <tr>
+      <td>monkey-number</td>
+      <td>If true, forces the per-page and client-limit value to be a value in the sequence of  1, 2, 5, 10, 25, 50...</td>
+      <td>Read/write.</td>
+    </tr>
+    <tr>
       <td>link-group-size</td>
       <td>Number of elements surrounding current page. <img src="img/link-group-size.png" alt="illustration" /></td>
       <td>Read/write.</td>
