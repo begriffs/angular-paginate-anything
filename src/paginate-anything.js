@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  // Ignore Monkeys
+  // Make Monkeys as directive
   // 1 2 5 10 25 50 100 250 500 etc
   function monkeyNumber(i) {
     var adjust = [1, 2.5, 5];
@@ -38,6 +38,7 @@
 
           page: '=?',
           perPage: '=?',
+          monkeyNumber: '=?',
           perPagePresets: '=?',
           clientLimit: '=?',
           linkGroupSize: '=?',
@@ -59,7 +60,14 @@
 
           var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
           $scope.linkGroupSize  = typeof(lgs) === 'number' ? lgs : 3;
-          $scope.clientLimit    = closestMonkey(typeof(cl) === 'number' ? cl : 250);
+
+            if ($scope.monkeyNumber === true){
+                $scope.clientLimit = closestMonkey(typeof(cl) === 'number' ? cl : 250);
+            } else {
+                $scope.clientLimit = typeof(cl) === 'number' ? cl : 250;
+            }
+
+
           $scope.updatePresets  = function () {
             var presets = [];
             for(var i = Math.min(3, monkeyIndex($scope.perPage || 250));
@@ -75,7 +83,12 @@
               return;
             }
 
-            var pp = $scope.perPage; closestMonkey($scope.perPage || 100);
+              if ($scope.monkeyNumber === true){
+                  var pp = closestMonkey($scope.perPage || 100);
+              } else {
+                  var pp = $scope.perPage;
+              }
+
             $scope.page = i;
             requestRange({
               from: i * pp,
@@ -180,7 +193,7 @@
             }
           });
 
-        }],
+        }]
       };
     }).
 
