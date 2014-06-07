@@ -181,11 +181,11 @@
               $scope.gotoPage(0);
             }
           });
-		  
+
           $scope.$watch('reloadPage', function(newVal, oldVal) {
             if(newVal === true && oldVal === false) {
-                $scope.reloadPage = false;
-                $scope.gotoPage($scope.page);
+              $scope.reloadPage = false;
+              $scope.gotoPage($scope.page);
             }
           });
 

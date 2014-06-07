@@ -24,7 +24,8 @@
     'per-page-presets="perPagePresets"',
     'link-group-size="linkGroupSize"',
     'server-limit="serverLimit"',
-    'client-limit="clientLimit"'
+    'client-limit="clientLimit"',
+    'reload-page="reloadPage"'
   ].join(' ') + '/>';
 
   function finiteStringBackend(s, maxRange) {
@@ -355,6 +356,18 @@
       scope.$digest();
       $httpBackend.flush();
       expect(scope.page).toEqual(10);
+    });
+
+    it('reloads data when asked explicitly', function () {
+      $httpBackend.expectGET('/items').respond(200, '');
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      $httpBackend.expectGET('/items').respond(200, '');
+      scope.reloadPage = true;
+      scope.$digest();
+      $httpBackend.flush();
     });
 
   });
