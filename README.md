@@ -115,7 +115,7 @@ your page and set the `template-url` attribute (see below).
     <tr>
       <td>reload-page</td>
       <td>If set to true, the current page is reloaded.</td>
-      <td>Read/write.</td>
+      <td>Write-only.</td>
     </tr>
   </tbody>
 </table>
