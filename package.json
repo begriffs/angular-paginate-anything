@@ -1,6 +1,6 @@
 {
   "name": "angular-paginate-anything",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Add server-side pagination to any list",
   "main": "src/paginate-anything.js",
   "repository": {
