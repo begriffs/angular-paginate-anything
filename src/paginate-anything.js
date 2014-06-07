@@ -41,6 +41,7 @@
           perPagePresets: '=?',
           clientLimit: '=?',
           linkGroupSize: '=?',
+          reloadPage: '=?',
 
           // directive -> app communication only
           numPages: '=?',
@@ -53,6 +54,7 @@
         replace: true,
         controller: ['$scope', '$http', function($scope, $http) {
 
+          $scope.reloadPage     = false;
           $scope.paginated      = false;
           $scope.serverLimit    = Infinity; // it's not known yet
           $scope.Math           = window.Math; // Math for the template
@@ -177,6 +179,13 @@
           $scope.$watch('url', function(newUrl, oldUrl) {
             if(newUrl !== oldUrl) {
               $scope.gotoPage(0);
+            }
+          });
+
+          $scope.$watch('reloadPage', function(newVal, oldVal) {
+            if(newVal === true && oldVal === false) {
+              $scope.reloadPage = false;
+              $scope.gotoPage($scope.page);
             }
           });
 
