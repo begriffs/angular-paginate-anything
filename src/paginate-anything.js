@@ -72,8 +72,8 @@
             $scope.perPagePresets = presets;
           };
 
-          $scope.gotoPage = function (i) {
-            if(i < 0 || (i-1)*$scope.perPage > $scope.numItems) {
+          $scope.gotoPage = function (i) {  
+            if(i < 0 || i*$scope.perPage > $scope.numItems) {
               return;
             }
 
@@ -151,12 +151,14 @@
           $scope.gotoPage($scope.page || 0);
           $scope.updatePresets();
 
+		  
           $scope.$watch('page', function(newPage, oldPage) {
             if(newPage !== oldPage) {
               $scope.gotoPage(newPage);
             }
           });
-
+		 
+		 
           $scope.$watch('perPage', function(newPp, oldPp) {
             if(typeof(oldPp) === 'number' && newPp !== oldPp) {
               var first = $scope.page * oldPp;
