@@ -151,13 +151,13 @@
           $scope.gotoPage($scope.page || 0);
           $scope.updatePresets();
 
-		  
+		  /*
           $scope.$watch('page', function(newPage, oldPage) {
             if(newPage !== oldPage) {
               $scope.gotoPage(newPage);
             }
           });
-		 
+		  */
 		 
           $scope.$watch('perPage', function(newPp, oldPp) {
             if(typeof(oldPp) === 'number' && newPp !== oldPp) {
