@@ -369,6 +369,31 @@
       scope.$digest();
       $httpBackend.flush();
     });
+    
+    it('create one http query per page change', function () {
+      scope.linkGroupSize = 1;
+      scope.perPage = 2;
+      scope.page = 11;
+      var count = 0;
+      
+      $httpBackend.whenGET('/items').respond(function() {
+		  count++;
+        return finiteStringBackend('abcdefghijklmnopqrstuvwxyz');
+      });
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      
+      // ['1', '…', '9', '10', '11', '12', '13']
+
+      scope.page = 10;
+      $httpBackend.flush();
+      
+      scope.page = 13;
+      $httpBackend.flush();
+
+      expect(count).toEqual(3);
+    });
 
   });
 
@@ -595,7 +620,6 @@
       var elt = $compile(template)(scope);
       scope.$digest();
       $httpBackend.flush();
-
       linksShouldBe(elt, ['1', '2', '3', '…']);
     });
 
@@ -646,6 +670,9 @@
 
       expect(scope.perPagePresets).toEqual([10, 25]);
     });
+    
+    
+
 
   });
 
