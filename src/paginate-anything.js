@@ -71,18 +71,22 @@
             }
             $scope.perPagePresets = presets;
           };
-
-          $scope.gotoPage = function (i) {
-			  
-			if ($scope.page === i) {
-			  // force reload
+          
+          // load page with request range
+          var loadPageRange = function(i) {
 			  var pp = closestMonkey($scope.perPage || 100);
 			  requestRange({
 				  from: i * pp,
 				  to: (i+1) * pp - 1
 			  });
-			} else {
+		  };
 
+          $scope.gotoPage = function (i) {
+			  
+			if ($scope.page === i) {
+			  // force reload
+			  loadPageRange(i);
+			} else {
 			  // let $watch(page) do the relaod
 			  $scope.page = i;
 			}
@@ -161,14 +165,8 @@
               if(newPage < 0 || newPage*$scope.perPage > $scope.numItems) {
 				  return;
 			  }
-
-			  var pp = closestMonkey($scope.perPage || 100);
-
-			  requestRange({
-				  from: newPage * pp,
-				  to: (newPage+1) * pp - 1
-			  });
-
+			  
+			  loadPageRange(newPage);
           });
 		  
 		 
