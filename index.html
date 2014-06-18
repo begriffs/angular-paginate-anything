@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.min.js"></script>
     <script src="https://raw.githack.com/begriffs/angular-paginate-anything/master/src/paginate-anything.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
     <style>
@@ -32,6 +33,7 @@
 
     <div class="row">
       <begriffs.pagination
+        page="page"
         per-page="perPage"
         client-limit="clientLimit"
         url="'http://pagination.begriffs.com/words'"
@@ -46,13 +48,28 @@
 
   </body>
   <script>
-  angular.module("demoapp", ['begriffs.paginate-anything'])
-    .config(function($sceDelegateProvider) {
+  angular.module("demoapp", ['begriffs.paginate-anything', 'ngRoute'])
+    .config(function($sceDelegateProvider, $routeProvider, $locationProvider) {
       $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://raw.githack.com/begriffs/**']);
+
+      $locationProvider.html5Mode(true);
+      $routeProvider.when('/', {
+        controller: 'DemoController',
+        reloadOnSearch: false
+      });
     })
-    .controller("DemoController", function($scope) {
+    .controller("DemoController", function($scope, $location) {
       $scope.perPage = 5;
       $scope.clientLimit = 250;
+
+      $scope.$watch('page', function(page) { $location.search('page', page); });
+      $scope.$watch('perPage', function(page) { $location.search('perPage', page); });
+      $scope.$on('$locationChangeSuccess', function() {
+        var page = +$location.search().page,
+          perPage = +$location.search().perPage;
+        if(page >= 0) { $scope.page = page; };
+        if(perPage >= 0) { $scope.perPage = perPage; };
+      });
     });
 </script>
 </html>
