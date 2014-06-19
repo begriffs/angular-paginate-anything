@@ -136,8 +136,8 @@ limit and offset of the requested data. Your need to set response
 headers to indicate the range returned and the total number of items
 in the collection.
 
-You can write the logic yourself, or use a **pre-made** server
-side logic.
+You can write the logic yourself, or use one of the following server
+side libraries.
 
 <table>
   <thead>
@@ -154,6 +154,10 @@ side logic.
     <tr>
       <td>Express for Node</td>
       <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-to-configure-NodeJS">Node JS howto</a></td>
+    </tr>
+    <tr>
+      <td>ServiceStack for .NET</td>
+      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-to-configure-.NET">.NET howto</a></td>
     </tr>
   </tbody>
 </table>
