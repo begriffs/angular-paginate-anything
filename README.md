@@ -218,6 +218,7 @@ see my [clean_pagination](https://github.com/begriffs/clean_pagination) gem.
 * [Hypertext Transfer Protocol (HTTP/1.1): Range Requests](http://greenbytes.de/tech/webdav/draft-ietf-httpbis-p5-range-latest.html)
 * [RFC2616 Section 3.12, custom range units](http://www.ietf.org/rfc/rfc2616.txt)
 * [Beyond HTTP Header Links](http://blog.begriffs.com/2014/03/beyond-http-header-links.html)
+* [Heroku recommends Range headers for pagination](https://github.com/interagent/http-api-design#paginate-with-ranges)
 
 ### Thanks
 
