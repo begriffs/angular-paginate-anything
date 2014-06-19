@@ -48,6 +48,17 @@
       }
     };
   }
+  
+  
+  function countableFiniteStringBackend(s, resp) {
+    var respond = finiteStringBackend(s);
+    
+    return function(method, url, data, headers) {
+		resp.count++;
+		return respond(method, url, data, headers);
+	};
+  }
+  
 
   describe('paginate-anything', function () {
     it('does not appear for a non-range-paginated resource', function () {
@@ -369,7 +380,59 @@
       scope.$digest();
       $httpBackend.flush();
     });
+    
+    it('create one http query per page change', function () {
+      scope.linkGroupSize = 1;
+      scope.perPage = 2;
+      scope.page = 11;
+      var resp = { count: 0 };
 
+      $httpBackend.whenGET('/items').respond(
+		countableFiniteStringBackend('abcdefghijklmnopqrstuvwxyz', resp)
+      );
+      
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      
+      // ['1', '…', '9', '10', '11', '12', '13']
+
+      scope.page = 10;
+      $httpBackend.flush();
+      
+      scope.page = 13;
+      $httpBackend.flush();
+
+      expect(resp.count).toEqual(3);
+    });
+    
+   
+    it('create no http query for the next page button if we are on last page', function () {
+      scope.linkGroupSize = 1;
+      scope.perPage = 2;
+      scope.page = 13;
+      var resp = { count: 0 };
+      
+      $httpBackend.whenGET('/items').respond(
+		countableFiniteStringBackend('abcdefghijklmnopqrstuvwxyz', resp)
+	  );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      
+      // ['1', '…', '9', '10', '11', '12', '13']
+
+      scope.page = 14;
+      try {
+		$httpBackend.flush();
+	  } catch (e) {
+		 // No pending request to flush !
+		 //console.log(e.message);
+	  }	
+
+      expect(resp.count).toEqual(1);
+    });
+	
   });
 
   function linksShouldBe(elt, ar) {
@@ -595,7 +658,6 @@
       var elt = $compile(template)(scope);
       scope.$digest();
       $httpBackend.flush();
-
       linksShouldBe(elt, ['1', '2', '3', '…']);
     });
 
@@ -646,6 +708,9 @@
 
       expect(scope.perPagePresets).toEqual([10, 25]);
     });
+    
+    
+
 
   });
 

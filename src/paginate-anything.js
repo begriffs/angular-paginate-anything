@@ -71,18 +71,25 @@
             }
             $scope.perPagePresets = presets;
           };
+          
+          // load page with request range
+          var loadPageRange = function(i) {
+			  var pp = closestMonkey($scope.perPage || 100);
+			  requestRange({
+				  from: i * pp,
+				  to: (i+1) * pp - 1
+			  });
+		  };
 
           $scope.gotoPage = function (i) {
-            if(i < 0 || (i-1)*$scope.perPage > $scope.numItems) {
-              return;
-            }
-
-            var pp = closestMonkey($scope.perPage || 100);
-            $scope.page = i;
-            requestRange({
-              from: i * pp,
-              to: (i+1) * pp - 1
-            });
+			  
+			if ($scope.page === i) {
+			  // force reload
+			  loadPageRange(i);
+			} else {
+			  // let $watch(page) do the relaod
+			  $scope.page = i;
+			}
           };
 
           $scope.linkGroupFirst = function() {
@@ -147,26 +154,27 @@
               }
             });
           }
-
-          $scope.gotoPage($scope.page || 0);
+          
+          if (!$scope.page) {
+			$scope.page = 0;
+		  }
           $scope.updatePresets();
 
-          $scope.$watch('page', function(newPage, oldPage) {
-            if(newPage !== oldPage) {
-              $scope.gotoPage(newPage);
-            }
+		  
+          $scope.$watch('page', function(newPage) {
+              if(newPage < 0 || newPage*$scope.perPage > $scope.numItems) {
+				  return;
+			  }
+			  
+			  loadPageRange(newPage);
           });
-
+		  
+		 
           $scope.$watch('perPage', function(newPp, oldPp) {
             if(typeof(oldPp) === 'number' && newPp !== oldPp) {
               var first = $scope.page * oldPp;
               var newPage = Math.floor(first / newPp);
-
-              if($scope.page !== newPage) {
-                $scope.page = newPage; // $digest() will trigger gotoPage
-              } else { // sometimes upping perPage stays on a page (e.g. page 0)
-                $scope.gotoPage($scope.page);
-              }
+              $scope.gotoPage(newPage);
             }
           });
 
