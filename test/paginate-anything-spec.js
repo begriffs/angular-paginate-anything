@@ -392,6 +392,11 @@
       $httpBackend.flush();
 
       expect(elt.find('ul').eq(0).find('li').eq(-1).hasClass('disabled')).toBe(true);
+
+      // trying to advance further has no effect
+      scope.page = 13;
+      scope.$digest();
+      $httpBackend.verifyNoOutstandingRequest();
     });
 
     it('enables next link on next-to-last page', function () {
