@@ -73,16 +73,7 @@
           };
 
           $scope.gotoPage = function (i) {
-            if(i < 0 || i*$scope.perPage >= $scope.numItems) {
-              return;
-            }
-
-            var pp = closestMonkey($scope.perPage || 100);
             $scope.page = i;
-            requestRange({
-              from: i * pp,
-              to: (i+1) * pp - 1
-            });
           };
 
           $scope.linkGroupFirst = function() {
@@ -148,12 +139,20 @@
             });
           }
 
-          $scope.gotoPage($scope.page || 0);
+          $scope.page = $scope.page || 0;
           $scope.updatePresets();
 
           $scope.$watch('page', function(newPage, oldPage) {
             if(newPage !== oldPage) {
-              $scope.gotoPage(newPage);
+              if(newPage < 0 || newPage*$scope.perPage >= $scope.numItems) {
+                return;
+              }
+
+              var pp = closestMonkey($scope.perPage || 100);
+              requestRange({
+                from: newPage * pp,
+                to: (newPage+1) * pp - 1
+              });
             }
           });
 
@@ -163,9 +162,12 @@
               var newPage = Math.floor(first / newPp);
 
               if($scope.page !== newPage) {
-                $scope.page = newPage; // $digest() will trigger gotoPage
-              } else { // sometimes upping perPage stays on a page (e.g. page 0)
-                $scope.gotoPage($scope.page);
+                $scope.page = newPage;
+              } else {
+                requestRange({
+                  from: $scope.page * newPp,
+                  to: ($scope.page+1) * newPp - 1
+                });
               }
             }
           });
@@ -178,15 +180,24 @@
 
           $scope.$watch('url', function(newUrl, oldUrl) {
             if(newUrl !== oldUrl) {
-              $scope.gotoPage(0);
+              $scope.page = 0;
             }
           });
 
           $scope.$watch('reloadPage', function(newVal, oldVal) {
             if(newVal === true && oldVal === false) {
               $scope.reloadPage = false;
-              $scope.gotoPage($scope.page);
+              requestRange({
+                from: $scope.page * $scope.perPage,
+                to: ($scope.page+1) * $scope.perPage - 1
+              });
             }
+          });
+
+          var pp = closestMonkey($scope.perPage || 100);
+          requestRange({
+            from: $scope.page * pp,
+            to: ($scope.page+1) * pp - 1
           });
 
         }],
