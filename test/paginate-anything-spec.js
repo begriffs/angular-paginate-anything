@@ -121,7 +121,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      // perPage actually bumps down to 10 because it is a monkey number
+      // perPage actually bumps down to 10 because it is a quantized number
       expect(scope.collection).toEqual(['k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']);
     });
 
@@ -617,7 +617,7 @@
   });
 
   describe('per-page presets', function () {
-    it('goes in monkey number increments', function () {
+    it('goes in quantized number increments', function () {
       scope.clientLimit = 200;
       $httpBackend.expectGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvw') // length == 23

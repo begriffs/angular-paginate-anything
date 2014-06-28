@@ -2,13 +2,13 @@
   'use strict';
 
   // 1 2 5 10 25 50 100 250 500 etc
-  function monkeyNumber(i) {
+  function quantizedNumber(i) {
     var adjust = [1, 2.5, 5];
     return Math.floor(Math.pow(10, Math.floor(i/3)) * adjust[i % 3]);
   }
 
-  // the j such that monkeyNumber(j) is closest to i
-  function monkeyIndex(i) {
+  // the j such that quantizedNumber(j) is closest to i
+  function quantizedIndex(i) {
     if(i < 1) { return 0; }
     var group = Math.floor(Math.log(i) / Math.LN10),
         offset = i/(2.5 * Math.pow(10, group));
@@ -19,11 +19,9 @@
     return 3*group + Math.round(Math.min(2, offset));
   }
 
-  function closestMonkey(i) {
-    if(i === Infinity) {
-      return Infinity;
-    }
-    return monkeyNumber(monkeyIndex(i));
+  function quantize(i) {
+    if(i === Infinity) { return Infinity; }
+    return quantizedNumber(quantizedIndex(i));
   }
 
   angular.module('begriffs.paginate-anything', []).
@@ -61,13 +59,13 @@
 
           var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
           $scope.linkGroupSize  = typeof(lgs) === 'number' ? lgs : 3;
-          $scope.clientLimit    = closestMonkey(typeof(cl) === 'number' ? cl : 250);
+          $scope.clientLimit    = quantize(typeof(cl) === 'number' ? cl : 250);
           $scope.updatePresets  = function () {
             var presets = [];
-            for(var i = Math.min(3, monkeyIndex($scope.perPage || 250));
-                i <= monkeyIndex(Math.min($scope.clientLimit, $scope.serverLimit));
+            for(var i = Math.min(3, quantizedIndex($scope.perPage || 250));
+                i <= quantizedIndex(Math.min($scope.clientLimit, $scope.serverLimit));
                 i++) {
-              presets.push(monkeyNumber(i));
+              presets.push(quantizedNumber(i));
             }
             $scope.perPagePresets = presets;
           };
@@ -122,11 +120,11 @@
                     (response.to < response.total - 1 && response.total < request.to)
                   ) {
                     if(!$scope.perPage || length(response) < $scope.perPage) {
-                      var idx = monkeyIndex(length(response));
-                      if(monkeyNumber(idx) > length(response)) {
+                      var idx = quantizedIndex(length(response));
+                      if(quantizedNumber(idx) > length(response)) {
                         idx--;
                       }
-                      $scope.serverLimit = monkeyNumber(idx);
+                      $scope.serverLimit = quantizedNumber(idx);
                       $scope.perPage = $scope.Math.min(
                         $scope.serverLimit,
                         $scope.clientLimit
@@ -148,7 +146,7 @@
                 return;
               }
 
-              var pp = closestMonkey($scope.perPage || 100);
+              var pp = quantize($scope.perPage || 100);
               requestRange({
                 from: newPage * pp,
                 to: (newPage+1) * pp - 1
@@ -194,7 +192,7 @@
             }
           });
 
-          var pp = closestMonkey($scope.perPage || 100);
+          var pp = quantize($scope.perPage || 100);
           requestRange({
             from: $scope.page * pp,
             to: ($scope.page+1) * pp - 1
