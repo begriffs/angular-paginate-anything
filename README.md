@@ -88,6 +88,11 @@ your page and set the `template-url` attribute (see below).
       <td>Read/write.</td>
     </tr>
     <tr>
+      <td>auto-presets</td>
+      <td>(default=`true`) Overrides per-page presets and client-limit to quantized values 1,2,5,10,25,50...</td>
+      <td>Read/write.</td>
+    </tr>
+    <tr>
       <td>client-limit</td>
       <td>Biggest page size the directive will show. Server response may be smaller.</td>
       <td>Read/write.</td>

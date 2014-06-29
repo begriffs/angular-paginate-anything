@@ -2,13 +2,13 @@
   'use strict';
 
   // 1 2 5 10 25 50 100 250 500 etc
-  function monkeyNumber(i) {
+  function quantizedNumber(i) {
     var adjust = [1, 2.5, 5];
     return Math.floor(Math.pow(10, Math.floor(i/3)) * adjust[i % 3]);
   }
 
-  // the j such that monkeyNumber(j) is closest to i
-  function monkeyIndex(i) {
+  // the j such that quantizedNumber(j) is closest to i
+  function quantizedIndex(i) {
     if(i < 1) { return 0; }
     var group = Math.floor(Math.log(i) / Math.LN10),
         offset = i/(2.5 * Math.pow(10, group));
@@ -19,11 +19,9 @@
     return 3*group + Math.round(Math.min(2, offset));
   }
 
-  function closestMonkey(i) {
-    if(i === Infinity) {
-      return Infinity;
-    }
-    return monkeyNumber(monkeyIndex(i));
+  function quantize(i) {
+    if(i === Infinity) { return Infinity; }
+    return quantizedNumber(quantizedIndex(i));
   }
 
   angular.module('begriffs.paginate-anything', []).
@@ -39,6 +37,7 @@
           page: '=?',
           perPage: '=?',
           perPagePresets: '=?',
+          autoPresets: '=?',
           clientLimit: '=?',
           linkGroupSize: '=?',
           reloadPage: '=?',
@@ -54,22 +53,33 @@
         replace: true,
         controller: ['$scope', '$http', function($scope, $http) {
 
-          $scope.reloadPage     = false;
-          $scope.paginated      = false;
-          $scope.serverLimit    = Infinity; // it's not known yet
-          $scope.Math           = window.Math; // Math for the template
+          $scope.reloadPage   = false;
+          $scope.paginated    = false;
+          $scope.serverLimit  = Infinity; // it's not known yet
+          $scope.Math         = window.Math; // Math for the template
+
+          if(typeof $scope.autoPresets !== 'boolean') {
+            $scope.autoPresets = true;
+          }
 
           var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
-          $scope.linkGroupSize  = typeof(lgs) === 'number' ? lgs : 3;
-          $scope.clientLimit    = closestMonkey(typeof(cl) === 'number' ? cl : 250);
+          $scope.linkGroupSize  = typeof lgs === 'number' ? lgs : 3;
+          $scope.clientLimit    = typeof cl  === 'number' ? cl : 250;
+
           $scope.updatePresets  = function () {
-            var presets = [];
-            for(var i = Math.min(3, monkeyIndex($scope.perPage || 250));
-                i <= monkeyIndex(Math.min($scope.clientLimit, $scope.serverLimit));
-                i++) {
-              presets.push(monkeyNumber(i));
+            if($scope.autoPresets) {
+              var presets = [], i;
+              for(i = Math.min(3, quantizedIndex($scope.perPage || 250));
+                  i <= quantizedIndex(Math.min($scope.clientLimit, $scope.serverLimit));
+                  i++) {
+                presets.push(quantizedNumber(i));
+              }
+              $scope.perPagePresets = presets;
+            } else {
+              $scope.perPagePresets = $scope.perPagePresets.filter(
+                function (preset) { return preset <= $scope.serverLimit; }
+              ).concat([$scope.serverLimit]);
             }
-            $scope.perPagePresets = presets;
           };
 
           $scope.gotoPage = function (i) {
@@ -122,11 +132,15 @@
                     (response.to < response.total - 1 && response.total < request.to)
                   ) {
                     if(!$scope.perPage || length(response) < $scope.perPage) {
-                      var idx = monkeyIndex(length(response));
-                      if(monkeyNumber(idx) > length(response)) {
-                        idx--;
+                      if($scope.autoPresets) {
+                        var idx = quantizedIndex(length(response));
+                        if(quantizedNumber(idx) > length(response)) {
+                          idx--;
+                        }
+                        $scope.serverLimit = quantizedNumber(idx);
+                      } else {
+                        $scope.serverLimit = length(response);
                       }
-                      $scope.serverLimit = monkeyNumber(idx);
                       $scope.perPage = $scope.Math.min(
                         $scope.serverLimit,
                         $scope.clientLimit
@@ -140,7 +154,9 @@
           }
 
           $scope.page = $scope.page || 0;
-          $scope.updatePresets();
+          if($scope.autoPresets) {
+            $scope.updatePresets();
+          }
 
           $scope.$watch('page', function(newPage, oldPage) {
             if(newPage !== oldPage) {
@@ -148,7 +164,11 @@
                 return;
               }
 
-              var pp = closestMonkey($scope.perPage || 100);
+              var pp = $scope.perPage || 100;
+              if($scope.autoPresets) {
+                pp = quantize(pp);
+              }
+
               requestRange({
                 from: newPage * pp,
                 to: (newPage+1) * pp - 1
@@ -194,13 +214,13 @@
             }
           });
 
-          var pp = closestMonkey($scope.perPage || 100);
+          var pp = quantize($scope.perPage || 100);
           requestRange({
             from: $scope.page * pp,
             to: ($scope.page+1) * pp - 1
           });
 
-        }],
+        }]
       };
     }).
 
@@ -209,16 +229,16 @@
       return function(input) {
         var lowBound, highBound;
         switch (input.length) {
-          case 1:
-            lowBound = 0;
-            highBound = parseInt(input[0]) - 1;
-            break;
-          case 2:
-            lowBound = parseInt(input[0]);
-            highBound = parseInt(input[1]);
-            break;
-          default:
-            return input;
+        case 1:
+          lowBound = 0;
+          highBound = parseInt(input[0], 10) - 1;
+          break;
+        case 2:
+          lowBound = parseInt(input[0], 10);
+          highBound = parseInt(input[1], 10);
+          break;
+        default:
+          return input;
         }
         var result = [];
         for (var i = lowBound; i <= highBound; i++) { result.push(i); }

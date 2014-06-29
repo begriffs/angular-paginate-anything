@@ -22,6 +22,7 @@
     'num-pages="numPages"',
     'num-items="numItems"',
     'per-page-presets="perPagePresets"',
+    'auto-presets="autoPresets"',
     'link-group-size="linkGroupSize"',
     'server-limit="serverLimit"',
     'client-limit="clientLimit"',
@@ -121,7 +122,7 @@
       scope.$digest();
       $httpBackend.flush();
 
-      // perPage actually bumps down to 10 because it is a monkey number
+      // perPage actually bumps down to 10 because it is a quantized number
       expect(scope.collection).toEqual(['k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']);
     });
 
@@ -617,7 +618,7 @@
   });
 
   describe('per-page presets', function () {
-    it('goes in monkey number increments', function () {
+    it('goes in quantized number increments', function () {
       scope.clientLimit = 200;
       $httpBackend.expectGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvw') // length == 23
@@ -629,6 +630,19 @@
       expect(scope.perPagePresets).toEqual([10, 25, 50, 100, 250]);
     });
 
+    it('can be set manually', function () {
+      scope.perPagePresets = [2,3,5,7,11];
+      scope.autoPresets = false;
+      scope.perPage = 5;
+      $httpBackend.whenGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/*' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+
+      expect(scope.perPagePresets).toEqual([2,3,5,7,11]);
+    });
+
     it('adjusts for small server limits', function () {
       $httpBackend.expectGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz', 46)
@@ -638,6 +652,32 @@
       $httpBackend.flush();
 
       expect(scope.perPagePresets).toEqual([10, 25]);
+    });
+
+    it('does not adjust values less than server limit when set manually', function () {
+      scope.autoPresets = false;
+      scope.perPagePresets = [2,3,5,7,11];
+      $httpBackend.expectGET('/items').respond(
+        finiteStringBackend('abcdefghijk')
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPagePresets).toEqual([2,3,5,7,11]);
+    });
+
+    it('truncates values greater than detected server limit', function () {
+      scope.autoPresets = false;
+      scope.perPagePresets = [10,20,30,3000];
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/*' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPagePresets).toEqual([10,20,25]);
     });
 
     it('does not adjust if client limit < server limit', function () {
@@ -652,6 +692,17 @@
       expect(scope.perPagePresets).toEqual([10, 25]);
     });
 
+    it('hides per page select box when empty and no server limit detected', function () {
+      scope.autoPresets = false;
+      scope.perPagePresets = [];
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-999999/1000000' }
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(elt.find('select').length).toEqual(0);
+    });
   });
 
   describe('filtering', function () {
