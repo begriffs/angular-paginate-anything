@@ -37,6 +37,7 @@
           page: '=?',
           perPage: '=?',
           perPagePresets: '=?',
+          autoPresets: '=?',
           clientLimit: '=?',
           linkGroupSize: '=?',
           reloadPage: '=?',
@@ -52,14 +53,19 @@
         replace: true,
         controller: ['$scope', '$http', function($scope, $http) {
 
-          $scope.reloadPage     = false;
-          $scope.paginated      = false;
-          $scope.serverLimit    = Infinity; // it's not known yet
-          $scope.Math           = window.Math; // Math for the template
+          $scope.reloadPage   = false;
+          $scope.paginated    = false;
+          $scope.serverLimit  = Infinity; // it's not known yet
+          $scope.Math         = window.Math; // Math for the template
+
+          if(typeof $scope.autoPresets !== 'boolean') {
+            $scope.autoPresets = true;
+          }
 
           var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
           $scope.linkGroupSize  = typeof(lgs) === 'number' ? lgs : 3;
-          $scope.clientLimit    = quantize(typeof(cl) === 'number' ? cl : 250);
+          $scope.clientLimit    = typeof(cl) === 'number' ? cl : 250;
+
           $scope.updatePresets  = function () {
             var presets = [];
             for(var i = Math.min(3, quantizedIndex($scope.perPage || 250));
@@ -120,11 +126,15 @@
                     (response.to < response.total - 1 && response.total < request.to)
                   ) {
                     if(!$scope.perPage || length(response) < $scope.perPage) {
-                      var idx = quantizedIndex(length(response));
-                      if(quantizedNumber(idx) > length(response)) {
-                        idx--;
+                      if($scope.autoPresets) {
+                        var idx = quantizedIndex(length(response));
+                        if(quantizedNumber(idx) > length(response)) {
+                          idx--;
+                        }
+                        $scope.serverLimit = quantizedNumber(idx);
+                      } else {
+                        $scope.serverLimit = length(response);
                       }
-                      $scope.serverLimit = quantizedNumber(idx);
                       $scope.perPage = $scope.Math.min(
                         $scope.serverLimit,
                         $scope.clientLimit
@@ -138,7 +148,9 @@
           }
 
           $scope.page = $scope.page || 0;
-          $scope.updatePresets();
+          if($scope.autoPresets) {
+            $scope.updatePresets();
+          }
 
           $scope.$watch('page', function(newPage, oldPage) {
             if(newPage !== oldPage) {
@@ -146,7 +158,11 @@
                 return;
               }
 
-              var pp = quantize($scope.perPage || 100);
+              var pp = $scope.perPage || 100;
+              if($scope.autoPresets) {
+                pp = quantize(pp);
+              }
+
               requestRange({
                 from: newPage * pp,
                 to: (newPage+1) * pp - 1
@@ -171,7 +187,7 @@
           });
 
           $scope.$watch('serverLimit', function(newLimit, oldLimit) {
-            if(newLimit !== oldLimit) {
+            if($scope.autoPresets && newLimit !== oldLimit) {
               $scope.updatePresets();
             }
           });
@@ -198,7 +214,7 @@
             to: ($scope.page+1) * pp - 1
           });
 
-        }],
+        }]
       };
     }).
 

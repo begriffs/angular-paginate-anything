@@ -22,6 +22,7 @@
     'num-pages="numPages"',
     'num-items="numItems"',
     'per-page-presets="perPagePresets"',
+    'auto-presets="autoPresets"',
     'link-group-size="linkGroupSize"',
     'server-limit="serverLimit"',
     'client-limit="clientLimit"',
@@ -629,6 +630,19 @@
       expect(scope.perPagePresets).toEqual([10, 25, 50, 100, 250]);
     });
 
+    it('can be set manually', function () {
+      scope.perPagePresets = [2,3,5,7,11];
+      scope.autoPresets = false;
+      scope.perPage = 5;
+      $httpBackend.whenGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/*' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+
+      expect(scope.perPagePresets).toEqual([2,3,5,7,11]);
+    });
+
     it('adjusts for small server limits', function () {
       $httpBackend.expectGET('/items').respond(
         finiteStringBackend('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz', 46)
@@ -638,6 +652,19 @@
       $httpBackend.flush();
 
       expect(scope.perPagePresets).toEqual([10, 25]);
+    });
+
+    it('does not adjust when set manually', function () {
+      scope.autoPresets = false;
+      scope.perPagePresets = [2,3,5,7,11];
+      $httpBackend.expectGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz', 46)
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPagePresets).toEqual([2,3,5,7,11]);
     });
 
     it('does not adjust if client limit < server limit', function () {
@@ -652,6 +679,17 @@
       expect(scope.perPagePresets).toEqual([10, 25]);
     });
 
+    it('hides per page select box when empty', function () {
+      scope.autoPresets = false;
+      scope.perPagePresets = [];
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-1/10' }
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(elt.find('select').length).toEqual(0);
+    });
   });
 
   describe('filtering', function () {
