@@ -654,17 +654,30 @@
       expect(scope.perPagePresets).toEqual([10, 25]);
     });
 
-    it('does not adjust when set manually', function () {
+    it('does not adjust values less than server limit when set manually', function () {
       scope.autoPresets = false;
       scope.perPagePresets = [2,3,5,7,11];
       $httpBackend.expectGET('/items').respond(
-        finiteStringBackend('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz', 46)
+        finiteStringBackend('abcdefghijk')
       );
       $compile(template)(scope);
       scope.$digest();
       $httpBackend.flush();
 
       expect(scope.perPagePresets).toEqual([2,3,5,7,11]);
+    });
+
+    it('truncates values greater than detected server limit', function () {
+      scope.autoPresets = false;
+      scope.perPagePresets = [10,20,30,3000];
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/*' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.perPagePresets).toEqual([10,20,25]);
     });
 
     it('does not adjust if client limit < server limit', function () {
@@ -679,11 +692,11 @@
       expect(scope.perPagePresets).toEqual([10, 25]);
     });
 
-    it('hides per page select box when empty', function () {
+    it('hides per page select box when empty and no server limit detected', function () {
       scope.autoPresets = false;
       scope.perPagePresets = [];
       $httpBackend.expectGET('/items').respond(206,
-        '', { 'Range-Unit': 'items', 'Content-Range': '0-1/10' }
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-999999/1000000' }
       );
       var elt = $compile(template)(scope);
       scope.$digest();

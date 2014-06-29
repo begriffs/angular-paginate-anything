@@ -63,17 +63,23 @@
           }
 
           var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
-          $scope.linkGroupSize  = typeof(lgs) === 'number' ? lgs : 3;
-          $scope.clientLimit    = typeof(cl) === 'number' ? cl : 250;
+          $scope.linkGroupSize  = typeof lgs === 'number' ? lgs : 3;
+          $scope.clientLimit    = typeof cl  === 'number' ? cl : 250;
 
           $scope.updatePresets  = function () {
-            var presets = [];
-            for(var i = Math.min(3, quantizedIndex($scope.perPage || 250));
-                i <= quantizedIndex(Math.min($scope.clientLimit, $scope.serverLimit));
-                i++) {
-              presets.push(quantizedNumber(i));
+            if($scope.autoPresets) {
+              var presets = [], i;
+              for(i = Math.min(3, quantizedIndex($scope.perPage || 250));
+                  i <= quantizedIndex(Math.min($scope.clientLimit, $scope.serverLimit));
+                  i++) {
+                presets.push(quantizedNumber(i));
+              }
+              $scope.perPagePresets = presets;
+            } else {
+              $scope.perPagePresets = $scope.perPagePresets.filter(
+                function (preset) { return preset <= $scope.serverLimit; }
+              ).concat([$scope.serverLimit]);
             }
-            $scope.perPagePresets = presets;
           };
 
           $scope.gotoPage = function (i) {
@@ -187,7 +193,7 @@
           });
 
           $scope.$watch('serverLimit', function(newLimit, oldLimit) {
-            if($scope.autoPresets && newLimit !== oldLimit) {
+            if(newLimit !== oldLimit) {
               $scope.updatePresets();
             }
           });
