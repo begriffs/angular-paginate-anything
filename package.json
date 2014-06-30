@@ -13,13 +13,14 @@
     "grunt-bump"                   : "latest",
     "grunt-cli"                    : "latest",
     "grunt-contrib-jshint"         : "latest",
+    "grunt-contrib-uglify"         : "latest",
     "grunt-contrib-watch"          : "latest",
     "grunt-karma"                  : "latest",
     "jshint"                       : "latest",
     "karma"                        : "latest",
     "karma-jasmine"                : "latest",
-    "karma-phantomjs-launcher"     : "latest",
-    "karma-ng-html2js-preprocessor": "latest"
+    "karma-ng-html2js-preprocessor": "latest",
+    "karma-phantomjs-launcher"     : "latest"
   },
   "keywords": [],
   "author": {
