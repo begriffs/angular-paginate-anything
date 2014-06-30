@@ -157,8 +157,11 @@ side libraries.
       <td><a href="https://github.com/begriffs/clean_pagination">begriffs/clean_pagination</a> gem</td>
     </tr>
     <tr>
-      <td>Express for Node</td>
-      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-to-configure-NodeJS">Node JS howto</a></td>
+      <td rowspan="2">Node.js</td>
+      <td><a href="https://github.com/polo2ro/node-paginate-anything">node-paginate-anything</a> module</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-to-configure-NodeJS">Express JS from scratch howto</a></td>
     </tr>
     <tr>
       <td>ServiceStack for .NET</td>
