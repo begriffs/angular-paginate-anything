@@ -731,4 +731,27 @@
       expect(scope.collection).toEqual(['1', '2']);
     });
   });
+
+  describe('passive mode', function () {
+    var template = '<begriffs.pagination ' + [
+      'collection="collection"', 'page="page"',
+      'per-page="perPage"', 'url="\'/items\'"'
+    ].join(' ') + '/>' + '<begriffs.pagination ' + [
+      'collection="collection"', 'page="page"',
+      'per-page="perPage"', 'url="\'/items\'"', 'passive="true"'
+    ].join(' ') + '/>';
+
+    // TODO: This test is not effective because the problem only appears
+    // in Firefox, but even the karma-firefox-launcher did not catch it
+    // for some reason.
+    it('prevents duplicate loading', function () {
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/26' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush(1);
+      $httpBackend.verifyNoOutstandingRequest();
+    });
+  });
 }());

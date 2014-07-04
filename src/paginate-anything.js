@@ -41,6 +41,7 @@
           clientLimit: '=?',
           linkGroupSize: '=?',
           reloadPage: '=?',
+          passive: '@',
 
           // directive -> app communication only
           numPages: '=?',
@@ -159,6 +160,8 @@
           }
 
           $scope.$watch('page', function(newPage, oldPage) {
+            if($scope.passive === 'true') { return; }
+
             if(newPage !== oldPage) {
               if(newPage < 0 || newPage*$scope.perPage >= $scope.numItems) {
                 return;
@@ -177,6 +180,8 @@
           });
 
           $scope.$watch('perPage', function(newPp, oldPp) {
+            if($scope.passive === 'true') { return; }
+
             if(typeof(oldPp) === 'number' && newPp !== oldPp) {
               var first = $scope.page * oldPp;
               var newPage = Math.floor(first / newPp);
@@ -193,18 +198,24 @@
           });
 
           $scope.$watch('serverLimit', function(newLimit, oldLimit) {
+            if($scope.passive === 'true') { return; }
+
             if(newLimit !== oldLimit) {
               $scope.updatePresets();
             }
           });
 
           $scope.$watch('url', function(newUrl, oldUrl) {
+            if($scope.passive === 'true') { return; }
+
             if(newUrl !== oldUrl) {
               $scope.page = 0;
             }
           });
 
           $scope.$watch('reloadPage', function(newVal, oldVal) {
+            if($scope.passive === 'true') { return; }
+
             if(newVal === true && oldVal === false) {
               $scope.reloadPage = false;
               requestRange({

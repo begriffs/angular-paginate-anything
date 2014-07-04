@@ -122,6 +122,11 @@ your page and set the `template-url` attribute (see below).
       <td>If set to true, the current page is reloaded.</td>
       <td>Write-only.</td>
     </tr>
+    <tr>
+      <td>passive</td>
+      <td>If using more than one pagination control set this to 'true' on all but the first.</td>
+      <td>Write-only.</td>
+    </tr>
   </tbody>
 </table>
 
