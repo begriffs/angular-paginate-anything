@@ -4,7 +4,7 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
       all: [
-        './src/*.js', '*.json', './test/*.js'
+        './src/paginate-anything.js', '*.json', './test/*.js'
       ],
       options: {
         jshintrc: '.jshintrc'
@@ -23,12 +23,23 @@ module.exports = function (grunt) {
         commitFiles: ['package.json', 'bower.json'],
         pushTo: 'origin'
       }
+    },
+    uglify: {
+      options: {
+        banner: '// <%= pkg.name %> - v<%= pkg.version %>\n'
+      },
+      dist: {
+        files: {
+          'src/paginate-anything.min.js': ['src/paginate-anything.js']
+        }
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('test', ['jshint', 'karma:travis']);
 };
