@@ -117,7 +117,7 @@
                 {}, $scope.headers,
                 { 'Range-Unit': 'items', Range: [request.from, request.to].join('-') }
               )
-            }).success(function (data, status, headers) {
+            }).success(function (data, status, headers, config) {
               $scope.collection = data;
 
               var response = parseRange(headers('Content-Range'));
@@ -151,6 +151,10 @@
                 }
                 $scope.numPages = Math.ceil(response.total / ($scope.perPage || 1));
               }
+
+              $scope.$emit('pagination:loadPage', status, config);
+            }).error(function (data, status, headers, config) {
+              $scope.$emit('pagination:error', status, config);
             });
           }
 

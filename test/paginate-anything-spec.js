@@ -754,4 +754,39 @@
       $httpBackend.verifyNoOutstandingRequest();
     });
   });
+
+  describe('events', function () {
+    var template = '<begriffs.pagination ' + [
+      'collection="collection"', 'page="page"',
+      'per-page="perPage"', 'url="\'/items\'"'
+    ].join(' ') + '/>';
+
+    it('occur for loaded page', function (done) {
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/26' }
+      );
+      $compile(template)(scope);
+
+      scope.$on('pagination:loadPage', function(e, status, config) {
+        expect(config.url).toBe('/items');
+        expect(status).toBe(206);
+        done();
+      });
+      scope.$digest();
+      $httpBackend.flush();
+    });
+
+    it('occur for errors', function (done) {
+      $httpBackend.expectGET('/items').respond(500, '', { });
+      $compile(template)(scope);
+
+      scope.$on('pagination:error', function(e, status, config) {
+        expect(config.url).toBe('/items');
+        expect(status).toBe(500);
+        done();
+      });
+      scope.$digest();
+      $httpBackend.flush();
+    });
+  });
 }());

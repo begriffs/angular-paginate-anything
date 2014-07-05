@@ -18,7 +18,7 @@
     "grunt-karma"                  : "latest",
     "jshint"                       : "latest",
     "karma"                        : "latest",
-    "karma-jasmine"                : "latest",
+    "karma-jasmine"                : "~0.2.0",
     "karma-ng-html2js-preprocessor": "latest",
     "karma-phantomjs-launcher"     : "latest"
   },
