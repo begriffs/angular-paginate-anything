@@ -1,6 +1,6 @@
 {
   "name": "angular-paginate-anything",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "main": "src/paginate-anything.js",
   "dependencies": {
     "angular": "latest"
