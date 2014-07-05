@@ -20,7 +20,7 @@ module.exports = function (grunt) {
     bump: {
       options: {
         files: ['package.json', 'bower.json'],
-        commitFiles: ['package.json', 'bower.json'],
+        commitFiles: ['package.json', 'bower.json', 'src/paginate-anything.min.js'],
         pushTo: 'origin'
       }
     },
