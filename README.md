@@ -130,6 +130,21 @@ your page and set the `template-url` attribute (see below).
   </tbody>
 </table>
 
+### Events
+
+The directive emits events as pages load (`pagination:loadPage`)
+or errors occur (`pagination:error`). To catch these events do the
+following:
+
+```js
+$scope.$on('pagination:loadPage', function (event, status, config) {
+  // config contains parameters of the page request
+  console.log(config.url);
+  // status is the HTTP status of the result
+  console.log(status);
+});
+```
+
 ### How to deal with sorting, filtering and facets?
 
 Your server is responsible for interpreting URLs to provide these
