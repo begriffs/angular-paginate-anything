@@ -708,8 +708,9 @@
   describe('filtering', function () {
     var template = '<begriffs.pagination ' + [
       'collection="collection"', 'page="page"',
-      'per-page="perPage"', 'url="url"'
-    ].join(' ') + '/>';
+      'per-page="perPage"', 'url="url"',
+      'url-params="urlParams"'
+    ].join(' ') + '></begriffs.pagination>';
 
     it('reloads data from page 0 when url changes', function () {
       $httpBackend.whenGET('/letters').respond(finiteStringBackend('abcd'));
@@ -729,6 +730,26 @@
 
       expect(scope.page).toEqual(0);
       expect(scope.collection).toEqual(['1', '2']);
+    });
+
+    it('reloads data from page 0 when urlParams changes', function () {
+      $httpBackend.expectGET('/letters?foo=bar').respond(finiteStringBackend('abcd'));
+      scope.url       = '/letters';
+      scope.urlParams = { foo: 'bar' };
+      scope.perPage   = 2;
+      scope.page      = 1;
+
+      $compile(template)(scope);
+
+      scope.$digest();
+      $httpBackend.flush();
+
+      $httpBackend.expectGET('/letters?foo=baz').respond(finiteStringBackend('abcd'));
+      scope.urlParams = { foo: 'baz' };
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.page).toEqual(0);
     });
 
     it('reloads data when url changes even if already at page 0', function () {

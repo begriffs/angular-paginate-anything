@@ -31,7 +31,7 @@
         restrict: 'E',
         scope: {
           url: '=',
-          urlParams: '=',
+          urlParams: '=?',
           headers: '&',
           collection: '=',
 
@@ -226,7 +226,7 @@
           $scope.$watch('urlParams', function(newParams, oldParams) {
             if($scope.passive === 'true') { return; }
 
-            if(newParams !== oldParams) {
+            if(!angular.equals(newParams, oldParams)) {
               if($scope.page === 0){
                 $scope.reloadPage = true;
               } else {
@@ -234,7 +234,7 @@
               }
             }
           }, true);
-          
+
           $scope.$watch('reloadPage', function(newVal, oldVal) {
             if($scope.passive === 'true') { return; }
 
