@@ -730,6 +730,26 @@
       expect(scope.page).toEqual(0);
       expect(scope.collection).toEqual(['1', '2']);
     });
+
+    it('reloads data when url changes even if already at page 0', function () {
+      $httpBackend.whenGET('/letters').respond(finiteStringBackend('abcd'));
+      $httpBackend.whenGET('/numbers').respond(finiteStringBackend('1234'));
+      scope.url     = '/letters';
+      scope.perPage = 2;
+      scope.page    = 0;
+
+      $compile(template)(scope);
+
+      scope.$digest();
+      $httpBackend.flush();
+
+      scope.url = '/numbers';
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.page).toEqual(0);
+      expect(scope.collection).toEqual(['1', '2']);
+    });
   });
 
   describe('passive mode', function () {
