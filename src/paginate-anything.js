@@ -31,6 +31,7 @@
         restrict: 'E',
         scope: {
           url: '=',
+          urlParams: '=',
           headers: '&',
           collection: '=',
 
@@ -113,6 +114,7 @@
             $http({
               method: 'GET',
               url: $scope.url,
+              params: $scope.urlParams,
               headers: angular.extend(
                 {}, $scope.headers,
                 { 'Range-Unit': 'items', Range: [request.from, request.to].join('-') }
@@ -217,6 +219,18 @@
             }
           });
 
+          $scope.$watch('urlParams', function(newParams, oldParams) {
+            if($scope.passive === 'true') { return; }
+
+            if(newParams !== oldParams) {
+              if($scope.page === 0){
+                $scope.reloadPage = true;
+              } else {
+                $scope.page = 0;
+              }
+            }
+          }, true);
+          
           $scope.$watch('reloadPage', function(newVal, oldVal) {
             if($scope.passive === 'true') { return; }
 
