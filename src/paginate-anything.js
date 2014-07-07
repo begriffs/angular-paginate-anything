@@ -213,7 +213,11 @@
             if($scope.passive === 'true') { return; }
 
             if(newUrl !== oldUrl) {
-              $scope.page = 0;
+              if($scope.page === 0){
+                $scope.reloadPage = true;
+              } else {
+                $scope.page = 0;
+              }
             }
           });
 
