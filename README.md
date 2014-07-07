@@ -68,6 +68,11 @@ your page and set the `template-url` attribute (see below).
       <td>Read/write. Changing it will reset to the first page.</td>
     </tr>
     <tr>
+      <td>urlParams</td>
+      <td>map of strings or objects which will be turned to ?key1=value1&key2=value2 after the url</td>
+      <td>Read/write. Changing it will reset to the first page.</td>
+    </tr>
+    <tr>
       <td>headers</td>
       <td>additional headers to send during request</td>
       <td>Write-only.</td>
@@ -150,8 +155,22 @@ $scope.$on('pagination:loadPage', function (event, status, config) {
 Your server is responsible for interpreting URLs to provide these
 features.  You can connect the `url` attribute of this directive
 to a scope variable and adjust the variable with query params and
-whatever else your server recognizes. Changing the url causes the
+whatever else your server recognizes. Or you can use the 
+`urlParams` attribute to connect a map of strings or objects which 
+will be turned to ?key1=value1&key2=value2 after the url. 
+Changing the `url` or `urlParams` causes the
 pagination to reset to the first page and maintain page size.
+
+Example:
+```js
+$scope.url = 'api/resources';
+$scope.urlParams = {
+  key1: "value1",
+  key2: "value2"
+};
+```
+
+Will turn into the URL of the resource that is being requested: `api/resources?key1=value1&key2=value2`
 
 ### What your server needs to do
 
