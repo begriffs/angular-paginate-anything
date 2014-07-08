@@ -709,7 +709,8 @@
     var template = '<begriffs.pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="url"',
-      'url-params="urlParams"'
+      'url-params="urlParams"',
+      'headers="headers"'
     ].join(' ') + '></begriffs.pagination>';
 
     it('reloads data from page 0 when url changes', function () {
@@ -746,6 +747,46 @@
 
       $httpBackend.expectGET('/letters?foo=baz').respond(finiteStringBackend('abcd'));
       scope.urlParams = { foo: 'baz' };
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.page).toEqual(0);
+    });
+
+    it('passes extra headers by request', function () {
+      $httpBackend.expectGET(
+        '/items',
+        {
+          'foo':'bar',
+          'Range-Unit':'items',
+          'Range':'0-99',
+          'Accept':'application/json, text/plain, */*'
+        }
+      ).respond(206, '',
+        { 'Range-Unit': 'items', 'Content-Range': '0-99/200' }
+      );
+      scope.url = '/items';
+      scope.headers = { foo: 'bar' };
+      $compile(template)(scope);
+
+      scope.$digest();
+      $httpBackend.flush();
+    });
+
+    it('reloads data from page 0 when headers change', function () {
+      $httpBackend.expectGET('/letters').respond(finiteStringBackend('abcd'));
+      scope.url       = '/letters';
+      scope.headers = { foo: 'bar' };
+      scope.perPage   = 2;
+      scope.page      = 1;
+
+      $compile(template)(scope);
+
+      scope.$digest();
+      $httpBackend.flush();
+
+      $httpBackend.expectGET('/letters').respond(finiteStringBackend('abcd'));
+      scope.headers = { foo: 'baz' };
       scope.$digest();
       $httpBackend.flush();
 

@@ -30,11 +30,13 @@
       return {
         restrict: 'E',
         scope: {
+          // required
           url: '=',
-          urlParams: '=?',
-          headers: '&',
           collection: '=',
 
+          // optional
+          urlParams: '=?',
+          headers: '=?',
           page: '=?',
           perPage: '=?',
           perPagePresets: '=?',
@@ -227,6 +229,18 @@
             if($scope.passive === 'true') { return; }
 
             if(!angular.equals(newParams, oldParams)) {
+              if($scope.page === 0){
+                $scope.reloadPage = true;
+              } else {
+                $scope.page = 0;
+              }
+            }
+          }, true);
+
+          $scope.$watch('headers', function(newHeaders, oldHeaders) {
+            if($scope.passive === 'true') { return; }
+
+            if(!angular.equals(newHeaders, oldHeaders)) {
               if($scope.page === 0){
                 $scope.reloadPage = true;
               } else {
