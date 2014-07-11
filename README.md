@@ -36,6 +36,7 @@ Then in your view
   url="'http://api.server.com/stuff'">
 </begriffs.pagination>
 ```
+(Note: If you need to use a generated URL, reference the name of an existing url variable (as was done for `collection` and `someVariable`) rather than trying to use interpolation since race conditions may result.)
 
 The `pagination` directive uses an external template stored in
 `tpl/paginate-anything.html`.  Host it in a place accessible to
