@@ -242,6 +242,10 @@ response disclosing the range it chooses to return, along with the
 total items after a slash, where total items can be "*" meaning
 unknown or infinite.
 
+When there are zero elements to return your server should send
+status code 204 (no content), `Content-Range: */0`, and an empty
+body.
+
 To do all this header stuff you'll need to enable CORS on your server.
 In a Rails app you can do this by adding the following to `config/application.rb`:
 

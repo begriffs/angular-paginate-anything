@@ -89,6 +89,37 @@
       expect(scope.page).toEqual(0);
     });
 
+    it('loads empty array for zero-length range responses', function () {
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '*/0' }
+      );
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numItems).toEqual(0);
+      expect(scope.numPages).toEqual(0);
+      expect(scope.collection).toEqual([]);
+    });
+
+    it('loads empty array for 204 no content', function () {
+      $httpBackend.expectGET('/items').respond(204, '');
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numItems).toEqual(0);
+      expect(scope.numPages).toEqual(0);
+      expect(scope.collection).toEqual([]);
+    });
+
+    it('loads empty array for response lacking in any pagination info', function () {
+      $httpBackend.expectGET('/items').respond(200, '');
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.numItems).toEqual(0);
+      expect(scope.collection).toEqual([]);
+    });
+
     it('knows total pages', function () {
       $httpBackend.expectGET('/items').respond(206,
         '', { 'Range-Unit': 'items', 'Content-Range': '0-24/26' }

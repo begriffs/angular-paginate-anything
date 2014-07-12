@@ -122,11 +122,14 @@
                 { 'Range-Unit': 'items', Range: [request.from, request.to].join('-') }
               )
             }).success(function (data, status, headers, config) {
-              $scope.collection = data;
-
               var response = parseRange(headers('Content-Range'));
-
-              $scope.numItems = response ? response.total : data.length;
+              if(status === 204 || (response && response.total === 0)) {
+                $scope.numPages = $scope.numItems = 0;
+                $scope.collection = [];
+              } else {
+                $scope.numItems = response ? response.total : data.length;
+                $scope.collection = data || [];
+              }
 
               if(response) {
                 if(length(response) < response.total) {
@@ -296,12 +299,16 @@
 
   function parseRange(hdr) {
     var m = hdr && hdr.match(/^(\d+)-(\d+)\/(\d+|\*)$/);
-    if(!m) { return null; }
-    return {
-      from: +m[1],
-      to: +m[2],
-      total: m[3] === '*' ? Infinity : +m[3]
-    };
+    if(m) {
+      return {
+        from: +m[1],
+        to: +m[2],
+        total: m[3] === '*' ? Infinity : +m[3]
+      };
+    } else if(hdr === '*/0') {
+      return { total: 0 };
+    }
+    return null;
   }
 
   function length(range) {
