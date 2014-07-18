@@ -155,6 +155,8 @@
                       );
                     }
                   }
+                } else {
+                  $scope.paginated = false;
                 }
                 $scope.numPages = Math.ceil(response.total / ($scope.perPage || 1));
               }
