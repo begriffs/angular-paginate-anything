@@ -84,7 +84,7 @@ your page and set the `template-url` attribute (see below).
     </tr>
     <tr>
       <td>per-page</td>
-      <td>Max number of elements per page</td>
+      <td>(default=`50`) Max number of elements per page</td>
       <td>Read/write. The server may choose to send fewer items though.</td>
     </tr>
     <tr>
@@ -99,12 +99,12 @@ your page and set the `template-url` attribute (see below).
     </tr>
     <tr>
       <td>client-limit</td>
-      <td>Biggest page size the directive will show. Server response may be smaller.</td>
+      <td>(default=`250`) Biggest page size the directive will show. Server response may be smaller.</td>
       <td>Read/write.</td>
     </tr>
     <tr>
       <td>link-group-size</td>
-      <td>Number of elements surrounding current page. <img src="img/link-group-size.png" alt="illustration" /></td>
+      <td>(default=`3`) Number of elements surrounding current page. <img src="img/link-group-size.png" alt="illustration" /></td>
       <td>Read/write.</td>
     </tr>
     <tr>

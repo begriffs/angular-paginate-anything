@@ -19,6 +19,7 @@
   var template = '<begriffs.pagination ' + [
     'collection="collection"', 'page="page"',
     'per-page="perPage"', 'url="\'/items\'"',
+    'url-params="urlParams"',
     'num-pages="numPages"',
     'num-items="numItems"',
     'per-page-presets="perPagePresets"',
@@ -77,6 +78,22 @@
       scope.$digest();
       $httpBackend.flush();
       expect(elt.find('ul').length).toEqual(1);
+    });
+
+    it('does not appear after a redraw of the page', function() {
+      $httpBackend.expectGET('/items').respond(206,
+        '', { 'Range-Unit': 'items', 'Content-Range': '0-24/26' }
+      );
+      var elt = $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+      expect(elt.find('ul').length).toEqual(1);
+
+      $httpBackend.expectGET('/items?foo=foo').respond(200, '');
+      scope.urlParams = {foo: 'foo'};
+      scope.$digest();
+      $httpBackend.flush();
+      expect(elt.find('ul').length).toEqual(0);
     });
 
     it('starts at page 0', function () {
@@ -790,11 +807,11 @@
         {
           'foo':'bar',
           'Range-Unit':'items',
-          'Range':'0-99',
+          'Range':'0-49',
           'Accept':'application/json, text/plain, */*'
         }
       ).respond(206, '',
-        { 'Range-Unit': 'items', 'Content-Range': '0-99/200' }
+        { 'Range-Unit': 'items', 'Content-Range': '0-49/200' }
       );
       scope.url = '/items';
       scope.headers = { foo: 'bar' };

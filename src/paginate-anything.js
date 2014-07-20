@@ -27,6 +27,8 @@
   angular.module('begriffs.paginate-anything', []).
 
     directive('begriffs.pagination', function () {
+      var defaultLinkGroupSize = 3, defaultClientLimit = 250, defaultPerPage = 50;
+
       return {
         restrict: 'E',
         scope: {
@@ -58,7 +60,6 @@
         controller: ['$scope', '$http', function($scope, $http) {
 
           $scope.reloadPage   = false;
-          $scope.paginated    = false;
           $scope.serverLimit  = Infinity; // it's not known yet
           $scope.Math         = window.Math; // Math for the template
 
@@ -67,13 +68,13 @@
           }
 
           var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
-          $scope.linkGroupSize  = typeof lgs === 'number' ? lgs : 3;
-          $scope.clientLimit    = typeof cl  === 'number' ? cl : 250;
+          $scope.linkGroupSize  = typeof lgs === 'number' ? lgs : defaultLinkGroupSize;
+          $scope.clientLimit    = typeof cl  === 'number' ? cl : defaultClientLimit;
 
           $scope.updatePresets  = function () {
             if($scope.autoPresets) {
               var presets = [], i;
-              for(i = Math.min(3, quantizedIndex($scope.perPage || 250));
+              for(i = Math.min(3, quantizedIndex($scope.perPage || defaultPerPage));
                   i <= quantizedIndex(Math.min($scope.clientLimit, $scope.serverLimit));
                   i++) {
                 presets.push(quantizedNumber(i));
@@ -124,7 +125,7 @@
             }).success(function (data, status, headers, config) {
               var response = parseRange(headers('Content-Range'));
               if(status === 204 || (response && response.total === 0)) {
-                $scope.numPages = $scope.numItems = 0;
+                $scope.numItems = 0;
                 $scope.collection = [];
               } else {
                 $scope.numItems = response ? response.total : data.length;
@@ -133,8 +134,6 @@
 
               if(response) {
                 if(length(response) < response.total) {
-                  $scope.paginated = true;
-
                   if(
                     ( request.to < response.total - 1) ||
                     (response.to < response.total - 1 && response.total < request.to)
@@ -156,8 +155,8 @@
                     }
                   }
                 }
-                $scope.numPages = Math.ceil(response.total / ($scope.perPage || 1));
               }
+              $scope.numPages = Math.ceil($scope.numItems / ($scope.perPage || defaultPerPage));
 
               $scope.$emit('pagination:loadPage', status, config);
             }).error(function (data, status, headers, config) {
@@ -178,7 +177,7 @@
                 return;
               }
 
-              var pp = $scope.perPage || 100;
+              var pp = $scope.perPage || defaultPerPage;
               if($scope.autoPresets) {
                 pp = quantize(pp);
               }
@@ -264,7 +263,7 @@
             }
           });
 
-          var pp = quantize($scope.perPage || 100);
+          var pp = quantize($scope.perPage || defaultPerPage);
           requestRange({
             from: $scope.page * pp,
             to: ($scope.page+1) * pp - 1
