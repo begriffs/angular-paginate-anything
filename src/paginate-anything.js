@@ -54,7 +54,15 @@
           serverLimit: '=?'
         },
         templateUrl: function(element, attr) {
-          return attr.templateUrl || 'tpl/paginate-anything.html';
+          if (attr.templateUrlExpr) {
+            return eval(attr.templateUrlExpr);
+          }
+          else if (attr.templateUrl) {
+            return attr.templateUrl;
+          }
+          else {
+            return 'tpl/paginate-anything.html';
+          }
         },
         replace: true,
         controller: ['$scope', '$http', function($scope, $http) {
@@ -65,6 +73,10 @@
 
           if(typeof $scope.autoPresets !== 'boolean') {
             $scope.autoPresets = true;
+          }
+
+          if(typeof $scope.templateUrlExpr !== 'undefined') {
+            attr.templateUrl = $scope.$eval(attr.templateUrlExpr);
           }
 
           var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
