@@ -39,7 +39,8 @@ Then in your view
 
 The `pagination` directive uses an external template stored in
 `tpl/paginate-anything.html`.  Host it in a place accessible to
-your page and set the `template-url` attribute (see below).
+your page and set the `template-url` attribute. Note that the `url`
+param can be a scope variable as well as a hard-coded string.
 
 ### Benefits
 
