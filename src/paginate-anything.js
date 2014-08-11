@@ -75,10 +75,6 @@
             $scope.autoPresets = true;
           }
 
-          if(typeof $scope.templateUrlExpr !== 'undefined') {
-            attr.templateUrl = $scope.$eval(attr.templateUrlExpr);
-          }
-
           var lgs = $scope.linkGroupSize, cl = $scope.clientLimit;
           $scope.linkGroupSize  = typeof lgs === 'number' ? lgs : defaultLinkGroupSize;
           $scope.clientLimit    = typeof cl  === 'number' ? cl : defaultClientLimit;
