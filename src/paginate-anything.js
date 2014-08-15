@@ -263,6 +263,8 @@
             }
           });
 
+          if($scope.passive === 'true') { return; }
+
           var pp = quantize($scope.perPage || defaultPerPage);
           requestRange({
             from: $scope.page * pp,
