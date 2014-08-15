@@ -895,7 +895,7 @@
       $httpBackend.whenGET('/items').respond(500);
       $compile(template)(scope);
       scope.$digest();
-      expect(function() { $httpBackend.flush(); } ).toThrow();
+      $httpBackend.verifyNoOutstandingRequest();
     });
   });
 
