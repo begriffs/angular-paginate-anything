@@ -74,6 +74,16 @@ param can be a scope variable as well as a hard-coded string.
       <td>Read/write. Changing it will reset to the first page.</td>
     </tr>
     <tr>
+      <td>template-url</td>
+      <td>(default=`tpl/paginate-anything.html`) url of the template containing pagination controls. Does not support dynamic values (see template-url-expr)</td>
+      <td>Write-only.</td>
+    </tr>
+    <tr>
+      <td>template-url-expr</td>
+      <td>Expression that returns the url of the template containing pagination controls. This is eval'ed, and cannot contain references to scope variables, only global ones.</td>
+      <td>Write-only.</td>
+    </tr>
+    <tr>
       <td>headers</td>
       <td>additional headers to send during request</td>
       <td>Write-only.</td>

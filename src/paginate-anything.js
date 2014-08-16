@@ -54,7 +54,15 @@
           serverLimit: '=?'
         },
         templateUrl: function(element, attr) {
-          return attr.templateUrl || 'tpl/paginate-anything.html';
+          if (attr.templateUrlExpr) {
+            return eval(attr.templateUrlExpr);
+          }
+          else if (attr.templateUrl) {
+            return attr.templateUrl;
+          }
+          else {
+            return 'tpl/paginate-anything.html';
+          }
         },
         replace: true,
         controller: ['$scope', '$http', function($scope, $http) {
