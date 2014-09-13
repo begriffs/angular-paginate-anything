@@ -24,13 +24,13 @@
     return quantizedNumber(quantizedIndex(i));
   }
 
-  angular.module('begriffs.paginate-anything', []).
+  angular.module('bgf.paginateAnything', []).
 
-    directive('begriffs.pagination', function () {
+    directive('bgfPagination', function () {
       var defaultLinkGroupSize = 3, defaultClientLimit = 250, defaultPerPage = 50;
 
       return {
-        restrict: 'E',
+        restrict: 'AE',
         scope: {
           // required
           url: '=',

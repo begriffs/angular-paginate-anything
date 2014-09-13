@@ -3,7 +3,7 @@
 
   var $httpBackend, $compile, scope;
   beforeEach(function () {
-    angular.mock.module('begriffs.paginate-anything');
+    angular.mock.module('bgf.paginateAnything');
     angular.mock.module('tpl/paginate-anything.html');
 
     angular.mock.inject(
@@ -16,7 +16,7 @@
     );
   });
 
-  var template = '<begriffs.pagination ' + [
+  var template = '<bgf-pagination ' + [
     'collection="collection"', 'page="page"',
     'per-page="perPage"', 'url="\'/items\'"',
     'url-params="urlParams"',
@@ -754,12 +754,12 @@
   });
 
   describe('filtering', function () {
-    var template = '<begriffs.pagination ' + [
+    var template = '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="url"',
       'url-params="urlParams"',
       'headers="headers"'
-    ].join(' ') + '></begriffs.pagination>';
+    ].join(' ') + '></bgf-pagination>';
 
     it('reloads data from page 0 when url changes', function () {
       $httpBackend.whenGET('/letters').respond(finiteStringBackend('abcd'));
@@ -863,10 +863,10 @@
   });
 
   describe('passive mode', function () {
-    var template = '<begriffs.pagination ' + [
+    var template = '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="\'/items\'"'
-    ].join(' ') + '/>' + '<begriffs.pagination ' + [
+    ].join(' ') + '/>' + '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="\'/items\'"', 'passive="true"'
     ].join(' ') + '/>';
@@ -886,7 +886,7 @@
   });
 
   describe('single passive mode', function () {
-    var template = '<begriffs.pagination ' + [
+    var template = '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="\'/items\'"', 'passive="true"'
     ].join(' ') + '/>';
@@ -900,7 +900,7 @@
   });
 
   describe('events', function () {
-    var template = '<begriffs.pagination ' + [
+    var template = '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="\'/items\'"'
     ].join(' ') + '/>';
