@@ -129,6 +129,11 @@ param can be a scope variable as well as a hard-coded string.
       <td>Write-only.</td>
     </tr>
     <tr>
+      <td>size</td>
+      <td>Twitter bootstrap sizing `sm`, `md` (default), or `lg` for the navigation elements.</td>
+      <td>Write-only.</td>
+    </tr>
+    <tr>
       <td>passive</td>
       <td>If using more than one pagination control set this to 'true' on all but the first.</td>
       <td>Write-only.</td>

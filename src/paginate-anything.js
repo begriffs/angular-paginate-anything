@@ -46,6 +46,7 @@
           clientLimit: '=?',
           linkGroupSize: '=?',
           reloadPage: '=?',
+          size: '=?',
           passive: '@',
 
           // directive -> app communication only
@@ -165,6 +166,7 @@
           }
 
           $scope.page = $scope.page || 0;
+          $scope.size = $scope.size || 'md';
           if($scope.autoPresets) {
             $scope.updatePresets();
           }
