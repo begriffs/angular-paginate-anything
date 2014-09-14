@@ -52,7 +52,9 @@
           // directive -> app communication only
           numPages: '=?',
           numItems: '=?',
-          serverLimit: '=?'
+          serverLimit: '=?',
+          rangeFrom: '=?',
+          rangeTo: '=?'
         },
         templateUrl: function(element, attr) {
           return attr.templateUrl || 'tpl/paginate-anything.html';
@@ -134,6 +136,8 @@
               }
 
               if(response) {
+                $scope.rangeFrom = response.from;
+                $scope.rangeTo   = response.to;
                 if(length(response) < response.total) {
                   if(
                     ( request.to < response.total - 1) ||

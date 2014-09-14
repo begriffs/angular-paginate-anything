@@ -124,6 +124,16 @@ param can be a scope variable as well as a hard-coded string.
       <td>Read-only.</td>
     </tr>
     <tr>
+      <td>range-from</td>
+      <td>Position of first item in currently loaded range</td>
+      <td>Read-only.</td>
+    </tr>
+    <tr>
+      <td>range-to</td>
+      <td>Position of last item in currently loaded range</td>
+      <td>Read-only.</td>
+    </tr>
+    <tr>
       <td>reload-page</td>
       <td>If set to true, the current page is reloaded.</td>
       <td>Write-only.</td>

@@ -933,4 +933,46 @@
       $httpBackend.flush();
     });
   });
+
+  describe('currently loaded range', function () {
+    var template = '<bgf-pagination ' + [
+      'collection="collection"',
+      'page="page"', 'per-page="perPage"',
+      'range-from="rangeFrom"',
+      'range-to="rangeTo"', 'url="\'/items\'"'
+    ].join(' ') + '/>';
+
+    it('stays up to date', function () {
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      scope.perPage = 5;
+
+      scope.page = 0;
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.rangeFrom).toEqual(0);
+      expect(scope.rangeTo).toEqual(4);
+
+      scope.page = 1;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.rangeFrom).toEqual(5);
+      expect(scope.rangeTo).toEqual(9);
+    });
+
+    it('is left unspecified when no results are returned', function () {
+      $httpBackend.expectGET('/items').respond(204, '');
+      scope.perPage = 5;
+      scope.page = 0;
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.rangeFrom).toEqual(undefined);
+      expect(scope.rangeTo).toEqual(undefined);
+    });
+  });
 }());
