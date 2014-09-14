@@ -24,13 +24,13 @@
     return quantizedNumber(quantizedIndex(i));
   }
 
-  angular.module('begriffs.paginate-anything', []).
+  angular.module('bgf.paginateAnything', []).
 
-    directive('begriffs.pagination', function () {
+    directive('bgfPagination', function () {
       var defaultLinkGroupSize = 3, defaultClientLimit = 250, defaultPerPage = 50;
 
       return {
-        restrict: 'E',
+        restrict: 'AE',
         scope: {
           // required
           url: '=',
@@ -46,12 +46,15 @@
           clientLimit: '=?',
           linkGroupSize: '=?',
           reloadPage: '=?',
+          size: '=?',
           passive: '@',
 
           // directive -> app communication only
           numPages: '=?',
           numItems: '=?',
-          serverLimit: '=?'
+          serverLimit: '=?',
+          rangeFrom: '=?',
+          rangeTo: '=?'
         },
         templateUrl: function(element, attr) {
           return attr.templateUrl || 'tpl/paginate-anything.html';
@@ -133,6 +136,8 @@
               }
 
               if(response) {
+                $scope.rangeFrom = response.from;
+                $scope.rangeTo   = response.to;
                 if(length(response) < response.total) {
                   if(
                     ( request.to < response.total - 1) ||
@@ -165,6 +170,7 @@
           }
 
           $scope.page = $scope.page || 0;
+          $scope.size = $scope.size || 'md';
           if($scope.autoPresets) {
             $scope.updatePresets();
           }

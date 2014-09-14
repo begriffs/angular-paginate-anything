@@ -3,7 +3,7 @@
 
   var $httpBackend, $compile, scope;
   beforeEach(function () {
-    angular.mock.module('begriffs.paginate-anything');
+    angular.mock.module('bgf.paginateAnything');
     angular.mock.module('tpl/paginate-anything.html');
 
     angular.mock.inject(
@@ -16,7 +16,7 @@
     );
   });
 
-  var template = '<begriffs.pagination ' + [
+  var template = '<bgf-pagination ' + [
     'collection="collection"', 'page="page"',
     'per-page="perPage"', 'url="\'/items\'"',
     'url-params="urlParams"',
@@ -754,12 +754,12 @@
   });
 
   describe('filtering', function () {
-    var template = '<begriffs.pagination ' + [
+    var template = '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="url"',
       'url-params="urlParams"',
       'headers="headers"'
-    ].join(' ') + '></begriffs.pagination>';
+    ].join(' ') + '></bgf-pagination>';
 
     it('reloads data from page 0 when url changes', function () {
       $httpBackend.whenGET('/letters').respond(finiteStringBackend('abcd'));
@@ -863,10 +863,10 @@
   });
 
   describe('passive mode', function () {
-    var template = '<begriffs.pagination ' + [
+    var template = '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="\'/items\'"'
-    ].join(' ') + '/>' + '<begriffs.pagination ' + [
+    ].join(' ') + '/>' + '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="\'/items\'"', 'passive="true"'
     ].join(' ') + '/>';
@@ -886,7 +886,7 @@
   });
 
   describe('single passive mode', function () {
-    var template = '<begriffs.pagination ' + [
+    var template = '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="\'/items\'"', 'passive="true"'
     ].join(' ') + '/>';
@@ -900,7 +900,7 @@
   });
 
   describe('events', function () {
-    var template = '<begriffs.pagination ' + [
+    var template = '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
       'per-page="perPage"', 'url="\'/items\'"'
     ].join(' ') + '/>';
@@ -931,6 +931,48 @@
       });
       scope.$digest();
       $httpBackend.flush();
+    });
+  });
+
+  describe('currently loaded range', function () {
+    var template = '<bgf-pagination ' + [
+      'collection="collection"',
+      'page="page"', 'per-page="perPage"',
+      'range-from="rangeFrom"',
+      'range-to="rangeTo"', 'url="\'/items\'"'
+    ].join(' ') + '/>';
+
+    it('stays up to date', function () {
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+      scope.perPage = 5;
+
+      scope.page = 0;
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.rangeFrom).toEqual(0);
+      expect(scope.rangeTo).toEqual(4);
+
+      scope.page = 1;
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.rangeFrom).toEqual(5);
+      expect(scope.rangeTo).toEqual(9);
+    });
+
+    it('is left unspecified when no results are returned', function () {
+      $httpBackend.expectGET('/items').respond(204, '');
+      scope.perPage = 5;
+      scope.page = 0;
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.rangeFrom).toEqual(undefined);
+      expect(scope.rangeTo).toEqual(undefined);
     });
   });
 }());

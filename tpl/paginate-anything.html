@@ -1,5 +1,5 @@
 <div class="paginate-anything">
-  <ul class="pagination links" ng-if="numPages > 1">
+  <ul class="pagination pagination-{{size}} links" ng-if="numPages > 1">
     <li ng-class="{disabled: page <= 0}"><a href ng-click="gotoPage(page-1)">&laquo;</a></li>
 
     <li ng-if="linkGroupFirst() > 0"><a href ng-click="gotoPage(0)">1</a></li>
