@@ -23,7 +23,7 @@ bower install angular-paginate-anything
 Load the javascript and declare your Angular dependency
 
 ```js
-angular.module('myModule', ['begriffs.paginate-anything']);
+angular.module('myModule', ['bgf.paginateAnything']);
 ```
 
 Then in your view
@@ -31,10 +31,10 @@ Then in your view
 ```html
 <!-- elements such as an ng-table reading from someVariable -->
 
-<begriffs.pagination
+<bgf-pagination
   collection="someVariable"
   url="'http://api.server.com/stuff'">
-</begriffs.pagination>
+</bgf-pagination>
 ```
 
 The `pagination` directive uses an external template stored in
