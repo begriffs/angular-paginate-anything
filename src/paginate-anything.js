@@ -117,6 +117,7 @@
           };
 
           function requestRange(request) {
+            $scope.$emit('pagination:loadStart', request);
             $http({
               method: 'GET',
               url: $scope.url,

@@ -153,9 +153,9 @@ param can be a scope variable as well as a hard-coded string.
 
 ### Events
 
-The directive emits events as pages load (`pagination:loadPage`)
-or errors occur (`pagination:error`). To catch these events do the
-following:
+The directive emits events as pages begin loading (`pagination:loadStart`)
+or finish (`pagination:loadPage`) or errors occur (`pagination:error`).
+To catch these events do the following:
 
 ```js
 $scope.$on('pagination:loadPage', function (event, status, config) {
@@ -165,6 +165,9 @@ $scope.$on('pagination:loadPage', function (event, status, config) {
   console.log(status);
 });
 ```
+
+The `pagination:loadStart` is passed the client request rather than
+the server response.
 
 ### How to deal with sorting, filtering and facets?
 
