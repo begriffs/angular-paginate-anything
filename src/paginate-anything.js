@@ -185,6 +185,7 @@
               }
 
               var pp = $scope.perPage || defaultPerPage;
+
               if($scope.autoPresets) {
                 pp = quantize(pp);
               }
@@ -272,12 +273,16 @@
 
           if($scope.passive === 'true') { return; }
 
-          var pp = quantize($scope.perPage || defaultPerPage);
+          var pp = $scope.perPage || defaultPerPage;
+
+          if($scope.autoPresets) {
+            pp = quantize(pp);
+          }
+
           requestRange({
             from: $scope.page * pp,
             to: ($scope.page+1) * pp - 1
           });
-
         }]
       };
     }).
