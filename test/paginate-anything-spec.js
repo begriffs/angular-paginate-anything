@@ -975,4 +975,48 @@
       expect(scope.rangeTo).toEqual(undefined);
     });
   });
+
+  describe('on page load', function () {
+    var template = '<bgf-pagination ' + [
+      'collection="collection"',
+      'range-from="rangeFrom"',
+      'range-to="rangeTo"',
+      'page="page"', 'per-page="perPage"',
+      'url="\'/items\'"',
+      'auto-presets="autoPresets"'
+    ].join(' ') + '/>';
+
+    it('quantizes items per-page by default', function () {
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+
+      scope.perPage = 20;
+
+      scope.page = 0;
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.rangeFrom).toEqual(0);
+      expect(scope.rangeTo).toEqual(24);
+    });
+
+    it('doesn\'t quantize items per-page if auto-presets is set to false', function () {
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('abcdefghijklmnopqrstuvwxyz')
+      );
+
+      scope.autoPresets = false;
+      scope.perPage = 20;
+
+      scope.page = 0;
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      expect(scope.rangeFrom).toEqual(0);
+      expect(scope.rangeTo).toEqual(19);
+    });
+  });
 }());
