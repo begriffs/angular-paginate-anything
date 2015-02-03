@@ -1,7 +1,7 @@
 {
   "name": "angular-paginate-anything",
   "version": "3.1.1",
-  "main": "dist/paginate-anything.js",
+  "main": "dist/paginate-anything-tpls.js",
   "dependencies": {
     "angular": "latest"
   },
