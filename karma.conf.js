@@ -21,13 +21,13 @@ module.exports = function(config) {
       'src/paginate-anything.js',
       'test/**/*.js',
 
-      'tpl/**/*.html'
+      'src/*.html'
     ],
 
 
     // populate the angular template cache for tests
     preprocessors: {
-      'tpl/*.html': ['ng-html2js']
+      'src/*.html': ['ng-html2js']
     },
 
 

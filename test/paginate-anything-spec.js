@@ -4,7 +4,7 @@
   var $httpBackend, $compile, scope;
   beforeEach(function () {
     angular.mock.module('bgf.paginateAnything');
-    angular.mock.module('tpl/paginate-anything.html');
+    angular.mock.module('src/paginate-anything.html');
 
     angular.mock.inject(
       ['$httpBackend', '$compile', '$rootScope',
