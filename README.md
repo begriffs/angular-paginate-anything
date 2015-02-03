@@ -20,7 +20,20 @@ Include with bower
 bower install angular-paginate-anything
 ```
 
+The bower package contains files in the ```dist/```directory with the following names:
+
+- angular-paginate-anything.js
+- angular-paginate-anything.min.js
+- angular-paginate-anything-tpls.js
+- angular-paginate-anything-tpls.min.js
+
+Files with the ```min``` suffix are minified versions to be used in production. The files with ```-tpls``` in their name have the directive template bundled. If you don't need the default template use the ```angular-paginate-anything.min.js``` file and provide your own template with the ```templateUrl``` attribute.
+
 Load the javascript and declare your Angular dependency
+
+```html
+<script src="bower_components/angular-paginate-anything/dist/angular-paginate-anything-tpls.min.js"></script>
+```
 
 ```js
 angular.module('myModule', ['bgf.paginateAnything']);
