@@ -100,4 +100,5 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['test', 'build']);
   grunt.registerTask('test', ['jshint', 'karma:travis']);
   grunt.registerTask('build', ['clean','ngtemplates', 'concat', 'copy', 'uglify']);
+  grunt.registerTask('makeRelease', ['bump-only', 'test', 'build', 'bump-commit']);
 };
