@@ -14,7 +14,12 @@
     "**/*.json",
     "node_modules",
     "bower_components",
-    "test"
+    "test",
+    "img",
+    "src",
+    "Gruntfile.js",
+    "package.json",
+    "karma.conf.js"
   ]
 }
 
