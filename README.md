@@ -161,6 +161,11 @@ param can be a scope variable as well as a hard-coded string.
       <td>If using more than one pagination control set this to 'true' on all but the first.</td>
       <td>Write-only.</td>
     </tr>
+    <tr>
+      <td>transform-response</td>
+      <td>Function that will get called once the http response has returned.  See <a href="https://docs.angularjs.org/api/ng/service/$http">Angular's $https documentation</td> for more information.
+      <td>Read/write. Changing it will reset to the first page.</td>
+    </tr>
   </tbody>
 </table>
 
