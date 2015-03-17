@@ -43,6 +43,15 @@
       <ul>
         <li ng-repeat="w in words">{{w}}</li>
       </ul>
+      <bgf-pagination
+        passive="true"
+        page="page"
+        per-page="perPage"
+        client-limit="clientLimit"
+        url="'http://pagination.begriffs.com/words'"
+        link-group-size="2"
+        collection="words">
+      </bgf-pagination>
     </div>
 
   </body>
