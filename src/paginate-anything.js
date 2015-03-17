@@ -271,8 +271,6 @@
             }
           });
 
-          if($scope.passive === 'true') { return; }
-
           var pp = $scope.perPage || defaultPerPage;
 
           if($scope.autoPresets) {
