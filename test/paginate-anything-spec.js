@@ -954,20 +954,6 @@
     });
   });
 
-  describe('single passive mode', function () {
-    var template = '<bgf-pagination ' + [
-      'collection="collection"', 'page="page"',
-      'per-page="perPage"', 'url="\'/items\'"', 'passive="true"'
-    ].join(' ') + '/>';
-
-    it('prevents loading first time', function () {
-      $httpBackend.whenGET('/items').respond(500);
-      $compile(template)(scope);
-      scope.$digest();
-      $httpBackend.verifyNoOutstandingRequest();
-    });
-  });
-
   describe('events', function () {
     var template = '<bgf-pagination ' + [
       'collection="collection"', 'page="page"',
