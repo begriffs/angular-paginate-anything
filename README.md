@@ -241,7 +241,11 @@ side libraries.
     </tr>
     <tr>
       <td>ServiceStack for .NET</td>
-      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-to-configure-.NET">.NET howto</a></td>
+      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-to-configure-ServiceStack-for-.NET">Service Stack .NET howto</a></td>
+    </tr>
+    <tr>
+      <td>ASP.NET Web API</td>
+      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-To-Configure-ASP.NET-Web-API">ASP.NET Web API howto</a></td>
     </tr>
   </tbody>
 </table>
@@ -266,7 +270,7 @@ Response
 ```HTTP
 HTTP/1.1 206 Partial Content
 Accept-Ranges: items
-Content-Range: 0-24/100
+Content-Range: items 0-24/100
 Range-Unit: items
 Content-Type: application/json
 
@@ -275,12 +279,12 @@ Content-Type: application/json
 
 In short your server parses the `Range` header to find the zero-based
 start and end item. It includes a `Content-Range` header in the
-response disclosing the range it chooses to return, along with the
+response disclosing the unit and range it chooses to return, along with the
 total items after a slash, where total items can be "*" meaning
 unknown or infinite.
 
 When there are zero elements to return your server should send
-status code 204 (no content), `Content-Range: */0`, and an empty
+status code 204 (no content), `Content-Range: items */0`, and an empty
 body.
 
 To do all this header stuff you'll need to enable CORS on your server.
