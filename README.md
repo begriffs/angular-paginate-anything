@@ -241,7 +241,11 @@ side libraries.
     </tr>
     <tr>
       <td>ServiceStack for .NET</td>
-      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-to-configure-.NET">.NET howto</a></td>
+      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-to-configure-ServiceStack-for-.NET">Service Stack .NET howto</a></td>
+    </tr>
+    <tr>
+      <td>ASP.NET Web API</td>
+      <td><a href="https://github.com/begriffs/angular-paginate-anything/wiki/How-To-Configure-ASP.NET-Web-API">ASP.NET Web API howto</a></td>
     </tr>
   </tbody>
 </table>
