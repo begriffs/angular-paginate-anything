@@ -98,6 +98,9 @@
           };
 
           $scope.gotoPage = function (i) {
+            if(i < 0 || i*$scope.perPage >= $scope.numItems) {
+              return;
+            }
             $scope.page = i;
           };
 
