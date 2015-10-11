@@ -52,7 +52,7 @@ Then in your view
 
 The `pagination` directive uses an external template stored in
 `tpl/paginate-anything.html`.  Host it in a place accessible to
-your page and set the `template-url` attribute. Note that the `url`
+your page and set the `templateUrl` attribute. Note that the `url`
 param can be a scope variable as well as a hard-coded string.
 
 ### Benefits
@@ -260,7 +260,7 @@ hundred total items.
 Request
 
 ```HTTP
-GET /items HTTP/1.1
+GET /stuff HTTP/1.1
 Range-Unit: items
 Range: 0-24
 ```
@@ -269,8 +269,7 @@ Response
 
 ```HTTP
 HTTP/1.1 206 Partial Content
-Accept-Ranges: items
-Content-Range: items 0-24/100
+Content-Range: 0-24/100
 Range-Unit: items
 Content-Type: application/json
 
@@ -284,8 +283,8 @@ total items after a slash, where total items can be "*" meaning
 unknown or infinite.
 
 When there are zero elements to return your server should send
-status code 204 (no content), `Content-Range: items */0`, and an empty
-body.
+status code 204 (no content), `Content-Range: */0`, and an empty
+body (or `[]` if the endpoint normally returns a JSON array).
 
 To do all this header stuff you'll need to enable CORS on your server.
 In a Rails app you can do this by adding the following to `config/application.rb`:
