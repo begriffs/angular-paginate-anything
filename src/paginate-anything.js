@@ -55,8 +55,8 @@
           size: '=?',
           passive: '@',
           transformResponse: '=?',
-		  method: '@',
-		  postData: '=?',
+          method: '@',
+          postData: '=?',
 
           // directive -> app communication only
           numPages: '=?',
@@ -131,10 +131,10 @@
           function requestRange(request) {
             $scope.$emit('pagination:loadStart', request);
             $http({
-              method: $scope.method != null ? $scope.method : 'GET',
+              method: $scope.method || 'GET',
               url: $scope.url,
               params: $scope.urlParams,
-			  data: $scope.postData,
+              data: $scope.postData,
               headers: angular.extend(
                 {}, $scope.headers,
                 { 'Range-Unit': 'items', Range: [request.from, request.to].join('-') }
