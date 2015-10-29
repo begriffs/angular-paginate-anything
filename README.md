@@ -166,6 +166,16 @@ param can be a scope variable as well as a hard-coded string.
       <td>Function that will get called once the http response has returned.  See <a href="https://docs.angularjs.org/api/ng/service/$http">Angular's $https documentation</td> for more information.
       <td>Read/write. Changing it will reset to the first page.</td>
     </tr>
+    <tr>
+      <td>method</td>
+      <td>Type of request method. Can be either GET or POST. Default is GET.
+      <td>Read/write.</td>
+    </tr>
+    <tr>
+      <td>postData</td>
+      <td>An array of data to be sent when method is set to POST.
+      <td>Read/write.</td>
+    </tr>
   </tbody>
 </table>
 
