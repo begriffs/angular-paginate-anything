@@ -131,6 +131,42 @@
           };
 
           function requestRange(request) {
+
+            function getData() {
+              if ($scope.getDataFnContext !== undefined && typeof $scope.getDataFn === 'function') {
+                return $scope.getDataFn()
+                  .call(
+                    $scope.getDataFnContext,
+                    {
+                      method: $scope.method || 'GET',
+                      url: $scope.url,
+                      params: $scope.urlParams,
+                      data: $scope.postData,
+                      headers: angular.extend(
+                        {}, $scope.headers,
+                        {'Range-Unit': 'items', Range: [request.from, request.to].join('-')}
+                      ),
+                      transformResponse: appendTransform($http.defaults.transformResponse, $scope.transformResponse)
+                    }
+                  );
+              }
+              else {
+                return $http(
+                  {
+                    method: $scope.method || 'GET',
+                    url: $scope.url,
+                    params: $scope.urlParams,
+                    data: $scope.postData,
+                    headers: angular.extend(
+                      {}, $scope.headers,
+                      {'Range-Unit': 'items', Range: [request.from, request.to].join('-')}
+                    ),
+                    transformResponse: appendTransform($http.defaults.transformResponse, $scope.transformResponse)
+                  }
+                );
+              }
+            }
+
             $scope.$emit('pagination:loadStart', request);
             getData().success(function (data, status, headers, config) {
               var response = parseRange(headers('Content-Range'));
@@ -175,40 +211,6 @@
               $scope.$emit('pagination:error', status, config);
             });
 
-            function getData() {
-              if ($scope.getDataFnContext !== undefined && typeof $scope.getDataFn === 'function') {
-                return $scope.getDataFn()
-                  .call(
-                    $scope.getDataFnContext,
-                    {
-                      method: $scope.method || 'GET',
-                      url: $scope.url,
-                      params: $scope.urlParams,
-                      data: $scope.postData,
-                      headers: angular.extend(
-                        {}, $scope.headers,
-                        {'Range-Unit': 'items', Range: [request.from, request.to].join('-')}
-                      ),
-                      transformResponse: appendTransform($http.defaults.transformResponse, $scope.transformResponse)
-                    }
-                  )
-              }
-              else {
-                return $http(
-                  {
-                    method: $scope.method || 'GET',
-                    url: $scope.url,
-                    params: $scope.urlParams,
-                    data: $scope.postData,
-                    headers: angular.extend(
-                      {}, $scope.headers,
-                      {'Range-Unit': 'items', Range: [request.from, request.to].join('-')}
-                    ),
-                    transformResponse: appendTransform($http.defaults.transformResponse, $scope.transformResponse)
-                  }
-                )
-              }
-            }
           }
 
           $scope.page = $scope.page || 0;
