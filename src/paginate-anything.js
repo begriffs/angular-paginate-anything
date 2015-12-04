@@ -57,6 +57,8 @@
           transformResponse: '=?',
           method: '@',
           postData: '=?',
+          getDataFn: '&?',
+          getDataFnContext: '=?',
 
           // directive -> app communication only
           numPages: '=?',
@@ -130,17 +132,7 @@
 
           function requestRange(request) {
             $scope.$emit('pagination:loadStart', request);
-            $http({
-              method: $scope.method || 'GET',
-              url: $scope.url,
-              params: $scope.urlParams,
-              data: $scope.postData,
-              headers: angular.extend(
-                {}, $scope.headers,
-                { 'Range-Unit': 'items', Range: [request.from, request.to].join('-') }
-              ),
-              transformResponse: appendTransform($http.defaults.transformResponse, $scope.transformResponse)
-            }).success(function (data, status, headers, config) {
+            getData().success(function (data, status, headers, config) {
               var response = parseRange(headers('Content-Range'));
               if(status === 204 || (response && response.total === 0)) {
                 $scope.numItems = 0;
@@ -182,6 +174,41 @@
             }).error(function (data, status, headers, config) {
               $scope.$emit('pagination:error', status, config);
             });
+
+            function getData() {
+              if ($scope.getDataFnContext !== undefined && typeof $scope.getDataFn === 'function') {
+                return $scope.getDataFn()
+                  .call(
+                    $scope.getDataFnContext,
+                    {
+                      method: $scope.method || 'GET',
+                      url: $scope.url,
+                      params: $scope.urlParams,
+                      data: $scope.postData,
+                      headers: angular.extend(
+                        {}, $scope.headers,
+                        {'Range-Unit': 'items', Range: [request.from, request.to].join('-')}
+                      ),
+                      transformResponse: appendTransform($http.defaults.transformResponse, $scope.transformResponse)
+                    }
+                  )
+              }
+              else {
+                return $http(
+                  {
+                    method: $scope.method || 'GET',
+                    url: $scope.url,
+                    params: $scope.urlParams,
+                    data: $scope.postData,
+                    headers: angular.extend(
+                      {}, $scope.headers,
+                      {'Range-Unit': 'items', Range: [request.from, request.to].join('-')}
+                    ),
+                    transformResponse: appendTransform($http.defaults.transformResponse, $scope.transformResponse)
+                  }
+                )
+              }
+            }
           }
 
           $scope.page = $scope.page || 0;
