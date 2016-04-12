@@ -147,6 +147,7 @@
           };
 
           function requestRange(request) {
+            if($scope.passive === 'true') { return; }
             $scope.$emit('pagination:loadStart', request);
             $http({
               method: $scope.method || 'GET',
