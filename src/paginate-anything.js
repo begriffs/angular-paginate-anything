@@ -30,6 +30,24 @@
     return (transform) ? defaults.concat(transform) : defaults;
   }
 
+  function parseRange(hdr) {
+    var m = hdr && hdr.match(/^(?:items )?(\d+)-(\d+)\/(\d+|\*)$/);
+    if(m) {
+      return {
+        from: +m[1],
+        to: +m[2],
+        total: m[3] === '*' ? Infinity : +m[3]
+      };
+    } else if(hdr === '*/0') {
+      return { total: 0 };
+    }
+    return null;
+  }
+
+  function length(range) {
+    return range.to - range.from + 1;
+  }
+
   angular.module('bgf.paginateAnything', []).
 
     directive('bgfPagination', function () {
@@ -129,6 +147,7 @@
           };
 
           function requestRange(request) {
+            if($scope.passive === 'true' || !$scope.url) { return; }
             $scope.$emit('pagination:loadStart', request);
             $http({
               method: $scope.method || 'GET',
@@ -336,23 +355,4 @@
         return result;
       };
     });
-
-
-  function parseRange(hdr) {
-    var m = hdr && hdr.match(/^(?:items )?(\d+)-(\d+)\/(\d+|\*)$/);
-    if(m) {
-      return {
-        from: +m[1],
-        to: +m[2],
-        total: m[3] === '*' ? Infinity : +m[3]
-      };
-    } else if(hdr === '*/0') {
-      return { total: 0 };
-    }
-    return null;
-  }
-
-  function length(range) {
-    return range.to - range.from + 1;
-  }
 }());

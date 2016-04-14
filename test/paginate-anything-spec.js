@@ -1074,4 +1074,15 @@
       expect(scope.rangeTo).toEqual(19);
     });
   });
+describe('blank url', function () {
+  var template = '<bgf-pagination ' + [
+    'collection="collection"', 'page="page"',
+    'per-page="perPage"', 'url=""'
+  ].join(' ') + '/>';
+  it('should not make an http request', function () {
+    $compile(template)(scope);
+    scope.$digest();
+    $httpBackend.verifyNoOutstandingRequest();
+  });
+});
 }());
