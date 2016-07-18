@@ -1,16 +1,17 @@
 (function () {
   'use strict';
 
-  var $httpBackend, $compile, scope;
+  var $httpBackend, $compile, scope, $q;
   beforeEach(function () {
     angular.mock.module('bgf.paginateAnything');
     angular.mock.module('src/paginate-anything.html');
 
     angular.mock.inject(
-      ['$httpBackend', '$compile', '$rootScope',
-      function (httpBackend, compile, rootScope) {
+      ['$httpBackend', '$compile', '$rootScope', '$q',
+      function (httpBackend, compile, rootScope, q) {
         $httpBackend = httpBackend;
         $compile = compile;
+        $q = q;
         scope = rootScope.$new();
       }]
     );
@@ -173,6 +174,26 @@
 
       // perPage actually bumps down to 10 because it is a quantized number
       expect(scope.collection).toEqual(['k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']);
+    });
+
+    it('uses provided function to retrieve data', function () {
+      var deferred = $q.defer();
+      deferred.resolve({ data: ['a', 'b'], status: 200, config: {}, headers: function() { return '0-1'; } });
+
+      scope.loadFn = function(config) {
+        expect(config.headers.Range).toBe('0-49');
+        return deferred.promise;
+      };
+      var template = '<bgf-pagination ' + [
+        'collection="collection"', 'page="page"',
+        'per-page="perPage"',
+        'url-params="urlParams"',
+        'headers="headers"', 'load-fn="loadFn(config)"'
+      ].join(' ') + '></bgf-pagination>';
+      $compile(template)(scope);
+      scope.$digest();
+      expect(scope.collection).toEqual(['a', 'b']);
+      $httpBackend.verifyNoOutstandingRequest();
     });
 
     it('can start on a different page', function () {
@@ -891,9 +912,9 @@
       scope.url     = '/letters';
       scope.perPage = 2;
       scope.page    = 0;
-      scope.transformResponse = function (oldData) { 
+      scope.transformResponse = function (oldData) {
         var newData = [];
-        angular.forEach(oldData, function (d) { 
+        angular.forEach(oldData, function (d) {
           newData.push(d.toUpperCase());
         });
         return newData;
