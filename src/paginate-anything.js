@@ -325,6 +325,10 @@
             }
           }, true);
 
+          $scope.$on('pagination:reload', function() {
+            $scope.reloadPage = true;
+          });
+
           var pp = $scope.perPage || defaultPerPage;
 
           if($scope.autoPresets) {

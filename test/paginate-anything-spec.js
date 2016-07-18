@@ -196,6 +196,30 @@
       $httpBackend.verifyNoOutstandingRequest();
     });
 
+    it('performs search on pagination:reload event', function () {
+      scope.page = 0;
+      scope.perPage = 1;
+      $compile(template)(scope);
+
+      var get = $httpBackend.whenGET('/items');
+      get.respond(
+        finiteStringBackend('a', 1)
+      );
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.collection).toEqual(['a']);
+
+      get.respond(
+        finiteStringBackend('b', 1)
+      );
+      scope.$broadcast('pagination:reload');
+      scope.$digest();
+      $httpBackend.flush();
+      expect(scope.collection).toEqual(['b']);
+
+      $httpBackend.verifyNoOutstandingRequest();
+    });
+
     it('can start on a different page', function () {
       scope.perPage = 25;
       scope.page = 1;
