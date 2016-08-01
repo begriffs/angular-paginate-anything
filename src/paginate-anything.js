@@ -296,10 +296,11 @@
             if($scope.passive === 'true') { return; }
 
             if(newVal === true && oldVal === false) {
+              var pp = $scope.perPage || defaultPerPage;
               $scope.reloadPage = false;
               requestRange({
-                from: $scope.page * $scope.perPage,
-                to: ($scope.page+1) * $scope.perPage - 1
+                from: $scope.page * pp,
+                to: ($scope.page+1) * pp - 1
               });
             }
           });
