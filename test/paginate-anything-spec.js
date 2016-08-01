@@ -31,6 +31,14 @@
     'transform-response="transformResponse"'
   ].join(' ') + '/>';
 
+  function linksShouldBe(elt, ar) {
+    ar.unshift('«');
+    ar.push('»');
+    for(var i = 0; i < ar.length; i++) {
+      expect(elt.find('li').eq(i).text().trim()).toEqual(ar[i]);
+    }
+  }
+
   function finiteStringBackend(s, maxRange) {
     maxRange = maxRange || s.length;
 
@@ -420,15 +428,24 @@
       $httpBackend.flush();
     });
 
-  });
+    it('reloading sans perPage peram succeeds', function () {
+      // scope.perPage left intentionally unset
+      scope.page = 1;
+      $httpBackend.whenGET('/items').respond(
+        finiteStringBackend('a')
+      );
 
-  function linksShouldBe(elt, ar) {
-    ar.unshift('«');
-    ar.push('»');
-    for(var i = 0; i < ar.length; i++) {
-      expect(elt.find('li').eq(i).text().trim()).toEqual(ar[i]);
-    }
-  }
+      $compile(template)(scope);
+      scope.$digest();
+      $httpBackend.flush();
+
+      // after reloading
+      scope.reloadPage = true;
+      scope.$digest();
+      $httpBackend.flush();
+    });
+
+  });
 
   describe('ui', function () {
     it('disables next link on last page', function () {
