@@ -163,18 +163,23 @@ param can be a scope variable as well as a hard-coded string.
     </tr>
     <tr>
       <td>transform-response</td>
-      <td>Function that will get called once the http response has returned.  See <a href="https://docs.angularjs.org/api/ng/service/$http">Angular's $https documentation</td> for more information.
+      <td>Function that will get called once the http response has returned. See <a href="https://docs.angularjs.org/api/ng/service/$http">Angular's $https documentation for more information.</td>
       <td>Read/write. Changing it will reset to the first page.</td>
     </tr>
     <tr>
       <td>method</td>
-      <td>Type of request method. Can be either GET or POST. Default is GET.
+      <td>Type of request method. Can be either GET or POST. Default is GET.</td>
       <td>Read/write.</td>
     </tr>
     <tr>
       <td>postData</td>
-      <td>An array of data to be sent when method is set to POST.
+      <td>An array of data to be sent when method is set to POST.</td>
       <td>Read/write.</td>
+    </tr>
+    <tr>
+      <td>load-fn</td>
+      <td>A callback function to perform the request. Gets the http config as parameter and must return a promise.</td>
+      <td>Write-only.</td>
     </tr>
   </tbody>
 </table>
@@ -196,6 +201,14 @@ $scope.$on('pagination:loadPage', function (event, status, config) {
 
 The `pagination:loadStart` is passed the client request rather than
 the server response.
+
+To trigger a reload the `pagination:reload` event can be send:
+
+```js
+function () {
+  $scope.$broadcast('pagination:reload');
+}
+```
 
 ### How to deal with sorting, filtering and facets?
 
@@ -313,6 +326,38 @@ end
 
 For a more complete implementation including other appropriate responses
 see my [clean_pagination](https://github.com/begriffs/clean_pagination) gem.
+
+### Using the load-fn callback
+
+Instead of having paginate-anything handle the http requests there is the option of using a callback function to perform the requests. This might be helpful e.g. if the data does not come from http endpoints, further processing of the request needs to be done prior to submitting the request or further processing of the response is necessary.
+
+The callback can be used as follows:
+
+```html
+<bgf-pagination collection="data" page="filter.page" per-page="filter.perpage" load-fn="callback(config)"></bgf-pagination>
+```
+
+```js
+$scope.callback = function (config) {
+  return $http(config);
+}
+
+// alternatively
+$scope.callback = function (config) {
+  return $q(function (resolve) {
+      resolve({
+        data: ['a', 'b'],
+        status: 200,
+        config: {},
+        headers: function (headerName) {
+          // fake Content-Range headers
+          return '0-1/*';
+        }
+      });
+    }
+  );
+}
+```
 
 ### Further reading
 
