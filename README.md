@@ -343,19 +343,18 @@ $scope.callback = function (config) {
 }
 
 // alternatively
-$scope.callback = function (config) {
-  return $q(function (resolve) {
-      resolve({
-        data: ['a', 'b'],
-        status: 200,
-        config: {},
-        headers: function (headerName) {
-          // fake Content-Range headers
-          return '0-1/*';
-        }
-      });
-    }
-  );
+$scope.callback = function(config) {
+  return $q(function(resolve) {
+    resolve({
+      data: ['a', 'b'],
+      status: 200,
+      config: {},
+      headers: function(headerName) {
+        // fake Content-Range headers
+        return '0-1/*';
+      }
+    });
+  });
 }
 ```
 
