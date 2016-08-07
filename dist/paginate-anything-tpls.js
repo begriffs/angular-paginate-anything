@@ -30,6 +30,24 @@
     return (transform) ? defaults.concat(transform) : defaults;
   }
 
+  function parseRange(hdr) {
+    var m = hdr && hdr.match(/^(?:items )?(\d+)-(\d+)\/(\d+|\*)$/);
+    if(m) {
+      return {
+        from: +m[1],
+        to: +m[2],
+        total: m[3] === '*' ? Infinity : +m[3]
+      };
+    } else if(hdr === '*/0') {
+      return { total: 0 };
+    }
+    return null;
+  }
+
+  function length(range) {
+    return range.to - range.from + 1;
+  }
+
   angular.module('bgf.paginateAnything', []).
 
     directive('bgfPagination', function () {
@@ -55,6 +73,9 @@
           size: '=?',
           passive: '@',
           transformResponse: '=?',
+          method: '@',
+          postData: '=?',
+          loadFn: '&',
 
           // directive -> app communication only
           numPages: '=?',
@@ -67,11 +88,12 @@
           return attr.templateUrl || 'src/paginate-anything.html';
         },
         replace: true,
-        controller: ['$scope', '$http', function($scope, $http) {
+        controller: ['$scope', '$attrs', '$http', function($scope, $attrs, $http) {
 
           $scope.reloadPage   = false;
           $scope.serverLimit  = Infinity; // it's not known yet
           $scope.Math         = window.Math; // Math for the template
+          var useLoadFn       = $attrs.loadFn !== undefined; // directive's '&' params are always set, need to determine from $attrs whether to use loadFn
 
           if(typeof $scope.autoPresets !== 'boolean') {
             $scope.autoPresets = true;
@@ -127,24 +149,29 @@
           };
 
           function requestRange(request) {
+            if($scope.passive === 'true' || !$scope.url && !useLoadFn) { return; }
             $scope.$emit('pagination:loadStart', request);
-            $http({
-              method: 'GET',
+
+            var config = {
+              method: $scope.method || 'GET',
               url: $scope.url,
               params: $scope.urlParams,
+              data: $scope.postData,
               headers: angular.extend(
                 {}, $scope.headers,
                 { 'Range-Unit': 'items', Range: [request.from, request.to].join('-') }
               ),
               transformResponse: appendTransform($http.defaults.transformResponse, $scope.transformResponse)
-            }).success(function (data, status, headers, config) {
-              var response = parseRange(headers('Content-Range'));
-              if(status === 204 || (response && response.total === 0)) {
+            };
+            var responsePromise = useLoadFn ? $scope.loadFn({config: config}) : $http(config);
+            responsePromise.then(function (rsp) {
+              var response = parseRange(rsp.headers('Content-Range'));
+              if(rsp.status === 204 || (response && response.total === 0)) {
                 $scope.numItems = 0;
                 $scope.collection = [];
               } else {
-                $scope.numItems = response ? response.total : data.length;
-                $scope.collection = data || [];
+                $scope.numItems = response ? response.total : rsp.data.length;
+                $scope.collection = rsp.data || [];
               }
 
               if(response) {
@@ -175,9 +202,9 @@
               }
               $scope.numPages = Math.ceil($scope.numItems / ($scope.perPage || defaultPerPage));
 
-              $scope.$emit('pagination:loadPage', status, config);
-            }).error(function (data, status, headers, config) {
-              $scope.$emit('pagination:error', status, config);
+              $scope.$emit('pagination:loadPage', rsp.status, rsp.config);
+            }, function (rsp) {
+              $scope.$emit('pagination:error', rsp.status, rsp.config);
             });
           }
 
@@ -274,10 +301,11 @@
             if($scope.passive === 'true') { return; }
 
             if(newVal === true && oldVal === false) {
+              var pp = $scope.perPage || defaultPerPage;
               $scope.reloadPage = false;
               requestRange({
-                from: $scope.page * $scope.perPage,
-                to: ($scope.page+1) * $scope.perPage - 1
+                from: $scope.page * pp,
+                to: ($scope.page+1) * pp - 1
               });
             }
           });
@@ -297,6 +325,10 @@
               }
             }
           }, true);
+
+          $scope.$on('pagination:reload', function() {
+            $scope.reloadPage = true;
+          });
 
           var pp = $scope.perPage || defaultPerPage;
 
@@ -333,25 +365,6 @@
         return result;
       };
     });
-
-
-  function parseRange(hdr) {
-    var m = hdr && hdr.match(/^(?:items )?(\d+)-(\d+)\/(\d+|\*)$/);
-    if(m) {
-      return {
-        from: +m[1],
-        to: +m[2],
-        total: m[3] === '*' ? Infinity : +m[3]
-      };
-    } else if(hdr === '*/0') {
-      return { total: 0 };
-    }
-    return null;
-  }
-
-  function length(range) {
-    return range.to - range.from + 1;
-  }
 }());
 
 angular.module('bgf.paginateAnything').run(['$templateCache', function($templateCache) {
