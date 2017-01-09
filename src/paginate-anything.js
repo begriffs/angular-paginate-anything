@@ -198,6 +198,8 @@
                       );
                     }
                   }
+                } else {
+                  $scope.paginated = false;
                 }
               }
               $scope.numPages = Math.ceil($scope.numItems / ($scope.perPage || defaultPerPage));
