@@ -172,7 +172,7 @@ param can be a scope variable as well as a hard-coded string.
       <td>Read/write.</td>
     </tr>
     <tr>
-      <td>postData</td>
+      <td>post-data</td>
       <td>An array of data to be sent when method is set to POST.</td>
       <td>Read/write.</td>
     </tr>
