@@ -8,7 +8,8 @@
     "url": "git://github.com/begriffs/angular-paginate-anything.git"
   },
   "devDependencies": {
-    "bower": "latest",
+    "angular": "^1.7.9",
+    "angular-mocks": "^1.7.9",
     "grunt": "latest",
     "grunt-angular-templates": "latest",
     "grunt-bump": "latest",
@@ -21,6 +22,7 @@
     "grunt-contrib-watch": "latest",
     "grunt-karma": "latest",
     "jasmine-core": "^2.4.1",
+    "jasmine-as-promised": "latest",
     "jshint": "latest",
     "karma": "latest",
     "karma-jasmine": "~0.2.0",
